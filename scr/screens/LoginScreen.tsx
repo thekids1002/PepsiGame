@@ -11,15 +11,18 @@ import {
   SafeAreaView,
 } from 'react-native';
 import BackgroundForm from '../components/BackgroundForm';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParams} from '../navigations/RootStackParam';
 
-const LoginScreen = () => {
+type Props = NativeStackScreenProps<RootStackParams, 'LoginScreen'>;
+const LoginScreen = ({navigation}: Props) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
   const [phoneNumber, setPhoneNumber] = useState('');
 
   const onPressSignup = () => {
-    Alert.alert('Chức năng đang phát triển');
+    navigation.replace('SignupScreen');
   };
 
   const onPressLogin = async () => {

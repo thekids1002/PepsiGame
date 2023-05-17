@@ -15,8 +15,11 @@ import BackgroundForm from '../components/BackgroundForm';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import LoadingDialog from '../components/LoadingDialog';
 import {isPhoneNumber, isPersonName} from '../utils/Function';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParams} from '../navigations/RootStackParam';
 
-const SignupScreen = () => {
+type Props = NativeStackScreenProps<RootStackParams, 'SignupScreen'>;
+const SignupScreen = ({navigation}: Props) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
@@ -26,26 +29,24 @@ const SignupScreen = () => {
   const [isAcceptRule, setIsAcceptRule] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const onPressViewRule = () => {};
+  const [showAlert, setShowAlert] = useState(false);
 
+  const handleShowAlert = () => {
+    setShowAlert(true);
+  };
+
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+  };
   const onPressSigup = () => {
-    setIsLoading(true);
-
-    try {
-      // Perform the API request
-      // ...
-    } catch (error) {
-      // Handle the error
-      // ...
-    }
-
-    setIsLoading(false);
+    Alert.alert('Thông báo', 'Chức năng đang phát triển');
   };
 
   const onPressLogin = () => {
     setIsLoading(true);
 
     try {
-      Alert.alert('Thông báo', 'Chức năng đang phát triển');
+      navigation.replace('LoginScreen');
     } catch (error) {
       // Handle the error
       // ...

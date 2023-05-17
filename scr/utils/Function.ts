@@ -3,7 +3,9 @@ const isPhoneNumber = (phoneNumber: string): boolean => {
   return regex.test(phoneNumber);
 };
 const isPersonName = (name: string): boolean => {
-  const regex: RegExp = /^[a-zA-Z\s]+$/;
+  const regex: RegExp =
+    /^([a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]){2,}/;
   return regex.test(name);
 };
+
 export {isPhoneNumber, isPersonName};
