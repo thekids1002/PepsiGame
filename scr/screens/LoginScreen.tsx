@@ -13,9 +13,13 @@ import {
 import BackgroundForm from '../components/BackgroundForm';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParams} from '../navigations/RootStackParam';
-
+import auth from '@react-native-firebase/auth';
+type LoginScreenProps = {
+  navigation: any;
+  route: any;
+};
 type Props = NativeStackScreenProps<RootStackParams, 'LoginScreen'>;
-const LoginScreen = ({navigation}: Props) => {
+const LoginScreen: React.FC<LoginScreenProps> = ({navigation, route}) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
@@ -26,7 +30,13 @@ const LoginScreen = ({navigation}: Props) => {
   };
 
   const onPressLogin = async () => {
-    Alert.alert('Chức năng đang phát triển');
+    try {
+      const confirm = await auth().signInWithPhoneNumber('+84' + phoneNumber);
+      console.log(JSON.stringify(confirm, null, 2));
+      navigation.navigate('OTP', {confirm, phoneNumber: '+84' + phoneNumber});
+    } catch (error: any) {
+      console.log(error);
+    }
   };
 
   const isPhoneNumber = (phoneNumber: string): boolean => {

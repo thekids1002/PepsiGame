@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import LoginScreen from '../screens/LoginScreen';
 import {RootStackParams} from './RootStackParam';
 import SignupScreen from '../screens/SignupScreen';
+import OTPScreen from '../screens/OTPScreen';
 
 const Stack = createNativeStackNavigator<RootStackParams>();
 
@@ -15,6 +16,7 @@ const RootStackNavigation = () => {
         initialRouteName="LoginScreen">
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="SignupScreen" component={SignupScreen} />
+        <Stack.Screen name="OTP" component={OTPScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
