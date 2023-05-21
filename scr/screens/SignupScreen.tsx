@@ -19,7 +19,8 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParams} from '../navigations/RootStackParam';
 
 type Props = NativeStackScreenProps<RootStackParams, 'SignupScreen'>;
-const SignupScreen = ({navigation}: Props) => {
+
+const SignupScreen = ({navigation, route}: Props) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
@@ -28,7 +29,9 @@ const SignupScreen = ({navigation}: Props) => {
   const [fullname, setFullname] = useState('');
   const [isAcceptRule, setIsAcceptRule] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const onPressViewRule = () => {};
+  const onPressViewRule = () => {
+    navigation.navigate('Rule');
+  };
   const [showAlert, setShowAlert] = useState(false);
 
   const handleShowAlert = () => {
