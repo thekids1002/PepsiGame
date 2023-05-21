@@ -122,125 +122,146 @@ const OTPScreen: React.FC<OTPScreenProps> = ({navigation, route}) => {
             textAlign: 'center',
             color: '#FFF',
             fontWeight: 'bold',
-            fontSize: 24,
-            marginBottom: 32,
+            fontSize: 26,
           }}>
-          Enter OTP
+          Xác minh OTP
         </Text>
-        <View style={styles.otpContainer}>
-          <TextInput
-            ref={otp1}
-            style={styles.otpInput}
-            keyboardType="numeric"
-            maxLength={1}
-            onChangeText={text => nextOtp(text, otp1, 0)}
-            value={otpCode[0]?.toString()}
-          />
-          <TextInput
-            ref={otp2}
-            style={styles.otpInput}
-            keyboardType="numeric"
-            maxLength={1}
-            onChangeText={text => nextOtp(text, otp2, 1)}
-            value={otpCode[1]?.toString()}
-          />
-          <TextInput
-            ref={otp3}
-            style={styles.otpInput}
-            keyboardType="numeric"
-            maxLength={1}
-            onChangeText={text => nextOtp(text, otp3, 2)}
-            value={otpCode[2]?.toString()}
-          />
-          <TextInput
-            ref={otp4}
-            style={styles.otpInput}
-            keyboardType="numeric"
-            maxLength={1}
-            onChangeText={text => nextOtp(text, otp4, 3)}
-            value={otpCode[3]?.toString()}
-          />
-          <TextInput
-            ref={otp5}
-            style={styles.otpInput}
-            keyboardType="numeric"
-            maxLength={1}
-            onChangeText={text => nextOtp(text, otp5, 4)}
-            value={otpCode[4]?.toString()}
-          />
-          <TextInput
-            ref={otp6}
-            style={styles.otpInput}
-            keyboardType="numeric"
-            maxLength={1}
-            onChangeText={text => nextOtp(text, otp6, 5)}
-            value={otpCode[5]?.toString()}
-          />
+        <Text
+          style={{
+            color: '#FFF',
+            fontSize: 14,
+            marginTop: 8,
+            textAlign: 'center',
+          }}>
+          {otpCorrect
+            ? 'Nhập mã OTP vừa được gửi về điện thoại của bạn'
+            : 'Mã OTP không đúng, vui lòng nhập lại'}
+        </Text>
+
+        <View
+          style={{
+            marginVertical: 30,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          {otpCode.map((item, index) => {
+            return (
+              <TextInput
+                style={[styles.otp, !otpCorrect ? styles.otpError : null]}
+                key={index}
+                placeholder="-"
+                ref={
+                  index == 0
+                    ? otp1
+                    : index == 1
+                    ? otp2
+                    : index == 2
+                    ? otp3
+                    : index == 3
+                    ? otp4
+                    : index == 4
+                    ? otp5
+                    : otp6
+                }
+                keyboardType="number-pad"
+                caretHidden={false}
+                maxLength={1}
+                onChangeText={text =>
+                  nextOtp(
+                    text,
+                    index == 0
+                      ? otp1
+                      : index == 1
+                      ? otp2
+                      : index == 2
+                      ? otp3
+                      : index == 3
+                      ? otp4
+                      : index == 4
+                      ? otp5
+                      : otp6,
+                    index,
+                  )
+                }
+                onKeyPress={({nativeEvent}) => {
+                  nativeEvent.key === 'Backspace'
+                    ? setIsBackspace(true)
+                    : setIsBackspace(false);
+                }}
+              />
+            );
+          })}
         </View>
-        {!otpCorrect && (
-          <Text style={styles.errorText}>Incorrect OTP. Please try again.</Text>
-        )}
-        <TouchableOpacity
-          style={styles.resendButton}
-          onPress={onPressResendOTP}>
-          <Text style={styles.resendButtonText}>Resend OTP</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.confirmButton,
-            isEmptyCode ? {backgroundColor: '#ccc'} : null,
-          ]}
-          onPress={onPressConfirm}
-          disabled={isEmptyCode}>
-          <Text style={styles.confirmButtonText}>Confirm</Text>
-        </TouchableOpacity>
+
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            disabled={isEmptyCode}
+            onPress={onPressConfirm}>
+            {!isEmptyCode ? (
+              <Image
+                source={require('../assets/imgs/btn_confirm_active.png')}
+              />
+            ) : (
+              <Image
+                source={require('../assets/imgs/btn_confirm_disabled.png')}
+              />
+            )}
+          </TouchableOpacity>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: 14,
+              }}>
+              {'Bạn chưa nhận được mã?'}
+            </Text>
+            <TouchableOpacity activeOpacity={0.5} onPress={onPressResendOTP}>
+              <Text
+                style={{
+                  color: Colors.kYellowColor,
+                  fontSize: 14,
+                  paddingVertical: 10,
+                  paddingHorizontal: 5,
+                  fontWeight: 'bold',
+                }}>
+                Gửi lại mã
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );
 };
 
+export default OTPScreen;
+
 const styles = StyleSheet.create({
-  otpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 32,
-  },
-  otpInput: {
+  otp: {
+    backgroundColor: '#fff',
     width: 50,
     height: 50,
-    borderRadius: 25,
-    borderWidth: 2,
-    borderColor: '#FFF',
-    fontSize: 24,
-    color: '#FFF',
+    marginHorizontal: 5,
+    borderRadius: 10,
     textAlign: 'center',
-    marginHorizontal: 8,
-  },
-  errorText: {
-    color: 'red',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  resendButton: {
-    alignSelf: 'center',
-    marginVertical: 8,
-  },
-  resendButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-  },
-  confirmButton: {
-    backgroundColor: Colors.primary,
-    alignSelf: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 5,
-  },
-  confirmButtonText: {
-    color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#333',
+  },
+  otpError: {
+    borderColor: 'red',
+    borderWidth: 2,
   },
 });
-
-export default OTPScreen;

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,32 +8,33 @@ import {
   Image,
   TouchableOpacity,
   Alert,
-  SafeAreaView,
-} from 'react-native';
-import BackgroundForm from '../components/BackgroundForm';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParams} from '../navigations/RootStackParam';
-import auth from '@react-native-firebase/auth';
+  SafeAreaView
+} from "react-native";
+import BackgroundForm from "../components/BackgroundForm";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParams } from "../navigations/RootStackParam";
+import auth from "@react-native-firebase/auth";
+
 type LoginScreenProps = {
   navigation: any;
   route: any;
 };
-type Props = NativeStackScreenProps<RootStackParams, 'LoginScreen'>;
-const LoginScreen: React.FC<LoginScreenProps> = ({navigation, route}) => {
-  const width = Dimensions.get('window').width;
-  const height = Dimensions.get('window').height;
+type Props = NativeStackScreenProps<RootStackParams, "LoginScreen">;
+const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, route }) => {
+  const width = Dimensions.get("window").width;
+  const height = Dimensions.get("window").height;
 
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const onPressSignup = () => {
-    navigation.replace('SignupScreen');
+    navigation.replace("SignupScreen");
   };
 
   const onPressLogin = async () => {
     try {
-      const confirm = await auth().signInWithPhoneNumber('+84' + phoneNumber);
+      const confirm = await auth().signInWithPhoneNumber("+84" + phoneNumber);
       console.log(JSON.stringify(confirm, null, 2));
-      navigation.navigate('OTP', {confirm, phoneNumber: '+84' + phoneNumber});
+      navigation.navigate("OTP", { confirm, phoneNumber: "+84" + phoneNumber });
     } catch (error: any) {
       console.log(error);
     }
@@ -46,57 +47,58 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation, route}) => {
 
   const styles = StyleSheet.create({
     container: {
-      position: 'absolute',
+      position: "absolute",
       top: height * 0.3,
       left: 0,
       right: 0,
-      justifyContent: 'center',
-      marginHorizontal: 28,
+      justifyContent: "center",
+      marginHorizontal: 28
     },
     title: {
-      textAlign: 'center',
-      color: '#FFF',
-      fontWeight: 'bold',
-      fontSize: 26,
+      textAlign: "center",
+      color: "#FFF",
+      fontWeight: "bold",
+      fontSize: 26
     },
     label: {
-      color: '#FFF',
-      fontWeight: 'bold',
+      color: "#FFF",
+      fontWeight: "bold",
       fontSize: 16,
-      marginTop: 14,
+      marginTop: 14
     },
     image: {
       marginVertical: 22,
-      alignSelf: 'center',
+      alignSelf: "center"
     },
     buttonContainer: {
-      justifyContent: 'center',
-      alignItems: 'center',
+      justifyContent: "center",
+      alignItems: "center"
     },
     button: {
-      opacity: 1,
+      opacity: 1
     },
     orText: {
-      color: '#fff',
+      color: "#fff",
       fontSize: 16,
-      marginBottom: 8,
-    },
+      marginBottom: 8
+    }
   });
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+  }, []);
 
   const StylesGlobal = StyleSheet.create({
     input: {
-      backgroundColor: '#fff',
+      backgroundColor: "#fff",
       marginVertical: 10,
       borderRadius: 10,
       paddingHorizontal: 14,
-      height: 45,
-    },
+      height: 45
+    }
   });
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <BackgroundForm titleShow={true} />
 
       <View style={styles.container}>
@@ -111,7 +113,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation, route}) => {
         />
 
         <Image
-          source={require('../assets/imgs/3lon1.png')}
+          source={require("../assets/imgs/3lon1.png")}
           style={styles.image}
         />
 
@@ -123,14 +125,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation, route}) => {
             style={[
               styles.button,
               {
-                opacity: isPhoneNumber(phoneNumber) ? 1 : 0.5,
-              },
+                opacity: isPhoneNumber(phoneNumber) ? 1 : 0.5
+              }
             ]}>
             <Image
               source={
                 isPhoneNumber(phoneNumber)
-                  ? require('../assets/imgs/btn_getOTP_active.png')
-                  : require('../assets/imgs/btn_getOTP_disabled.png')
+                  ? require("../assets/imgs/btn_getOTP_active.png")
+                  : require("../assets/imgs/btn_getOTP_disabled.png")
               }
             />
           </TouchableOpacity>
@@ -138,7 +140,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation, route}) => {
           <Text style={styles.orText}>Hoặc</Text>
 
           <TouchableOpacity onPress={onPressSignup} activeOpacity={0.8}>
-            <Image source={require('../assets/imgs/btn_signup.png')} />
+            <Image source={require("../assets/imgs/btn_signup.png")} />
           </TouchableOpacity>
         </View>
       </View>

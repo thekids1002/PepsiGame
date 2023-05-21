@@ -5,10 +5,8 @@ import SignupScreen from './scr/screens/SignupScreen';
 import RootStackNavigation from './scr/navigations/RootStackNavigation';
 
 const App = () => {
-  
   return <RootStackNavigation />;
 };
 
 export default App;
 
-const styles = StyleSheet.create({});
