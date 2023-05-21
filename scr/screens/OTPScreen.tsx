@@ -94,7 +94,7 @@ const OTPScreen: React.FC<OTPScreenProps> = ({navigation, route}) => {
     otpCode.forEach(item => (otp += item !== null ? item.toString() : ''));
     try {
       await confirm.confirm(otp);
-      Alert.alert('Xác nhận otp');
+      navigation.replace('HomeScreen');
     } catch (e) {
       Alert.alert('Lỗi rồi');
       console.log(e);

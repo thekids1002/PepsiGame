@@ -3,4 +3,5 @@ export type RootStackParams = {
   SignupScreen: undefined;
   OTP: undefined;
   Rule: undefined;
+  HomeScreen: undefined;
 };

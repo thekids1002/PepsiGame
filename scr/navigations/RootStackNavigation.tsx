@@ -6,6 +6,7 @@ import {RootStackParams} from './RootStackParam';
 import SignupScreen from '../screens/SignupScreen';
 import OTPScreen from '../screens/OTPScreen';
 import RulesScreen from '../screens/RuleScreen';
+import HomeScreen from '../screens/HomeScreen';
 
 const Stack = createNativeStackNavigator<RootStackParams>();
 
@@ -19,6 +20,7 @@ const RootStackNavigation = () => {
         <Stack.Screen name="SignupScreen" component={SignupScreen} />
         <Stack.Screen name="OTP" component={OTPScreen} />
         <Stack.Screen name="Rule" component={RulesScreen} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
