@@ -8,6 +8,8 @@ import OTPScreen from '../screens/OTPScreen';
 import RulesScreen from '../screens/RuleScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ScanBillScreen from '../screens/ScanBillScreen';
+import PlayGameScreen from '../screens/PlayGameScreen';
+import CollectionScreen from '../screens/CollectionScreen';
 
 const Stack = createNativeStackNavigator<RootStackParams>();
 
@@ -23,6 +25,8 @@ const RootStackNavigation = () => {
         <Stack.Screen name="Rule" component={RulesScreen} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="ScanBillScreen" component={ScanBillScreen} />
+        <Stack.Screen name="Collection" component={CollectionScreen} />
+        <Stack.Screen name="PlayGameScreen" component={PlayGameScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

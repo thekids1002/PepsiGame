@@ -5,4 +5,6 @@ export type RootStackParams = {
   Rule: undefined;
   HomeScreen: undefined;
   ScanBillScreen: undefined;
+  PlayGameScreen: undefined;
+  Collection: undefined;
 };

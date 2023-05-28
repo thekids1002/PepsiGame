@@ -29,16 +29,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation, route}) => {
 
   const onPressPlayFree = () => {
     setModalShow(false);
-    // navigation.navigate('PlayGame', {playType: 'miễn phí'});
+    navigation.navigate('PlayGameScreen', {playType: 'miễn phí'});
   };
 
   const onPressPlayExchange = () => {
     setModalShow(false);
-    // navigation.navigate('PlayGame', {playType: 'quy đổi'});
+    navigation.navigate('PlayGameScreen', {playType: 'quy đổi'});
   };
 
   const onPressCollection = () => {
-    // navigation.navigate('Collection');
+    navigation.navigate('Collection');
   };
 
   const onPressGiftDetail = () => {
