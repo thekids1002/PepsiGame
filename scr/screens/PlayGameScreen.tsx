@@ -25,22 +25,22 @@ const PlayGameScreen: React.FC<PlayGameScreenProps> = ({navigation, route}) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
-  const pan = useRef<any>(new Animated.ValueXY()).current;
+  const pan = useRef(new Animated.ValueXY()).current;
   const panResponder = useRef<PanResponderInstance>(
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderGrant: () => {
         pan.setOffset({
-          x: pan.x,
-          y: pan.y,
+          x: (pan.x as any)._value,
+          y: (pan.y as any)._value,
         });
       },
       onPanResponderMove: (event, gestureState) => {
         const bottom = -60;
         const top = -140;
-        const y = pan.y;
+        const y = (pan.y as any)._value;
         if (y < top) {
-          navigation.replace('Congratulation');
+          navigation.replace('CongratulationsScreen');
           return;
         }
         if (y > bottom) {

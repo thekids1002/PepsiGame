@@ -7,4 +7,5 @@ export type RootStackParams = {
   ScanBillScreen: undefined;
   PlayGameScreen: undefined;
   Collection: undefined;
+  CongratulationsScreen: undefined;
 };

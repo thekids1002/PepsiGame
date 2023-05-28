@@ -35,7 +35,7 @@ const Header: React.FC<HeaderProps> = ({
     if (auth().currentUser) {
       auth().signOut();
     }
-    navigation.replace('Login');
+    navigation.replace('LoginScreen');
   };
 
   return (

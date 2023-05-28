@@ -8,4 +8,8 @@ const isPersonName = (name: string): boolean => {
   return regex.test(name);
 };
 
-export {isPhoneNumber, isPersonName};
+const randomNumber = (min: number, max: number): number => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
+export {isPhoneNumber, isPersonName, randomNumber};
