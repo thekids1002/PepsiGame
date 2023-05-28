@@ -96,14 +96,11 @@ const OTPScreen: React.FC<OTPScreenProps> = ({navigation, route}) => {
       await confirm.confirm(otp);
       navigation.replace('HomeScreen');
     } catch (e) {
-      Alert.alert('Lỗi rồi');
-      console.log(e);
+      Alert.alert('Thông báo', 'Mã xác thực không chính xác');
     }
   };
 
-  useEffect(() => {
-    // Code to run on component mount
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <SafeAreaView style={{flex: 1}}>

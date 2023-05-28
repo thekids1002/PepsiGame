@@ -7,8 +7,11 @@ import {
   Image,
 } from 'react-native';
 import React from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome';
+
 import auth from '@react-native-firebase/auth';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faMugSaucer} from '@fortawesome/free-solid-svg-icons/faMugSaucer';
+import {faArrowLeft, faSignOutAlt} from '@fortawesome/free-solid-svg-icons';
 interface HeaderProps {
   title?: any;
   isButtonBack?: any;
@@ -42,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({
           onPress={onPressBack}
           activeOpacity={0.5}
           style={styles.btnBack}>
-          <Icon name="angle-left" color={'#fff'} size={35} />
+          <FontAwesomeIcon icon={faArrowLeft} color="#fff" size={35} />
         </TouchableOpacity>
       ) : (
         <View style={styles.btnBack} />
@@ -55,7 +58,7 @@ const Header: React.FC<HeaderProps> = ({
           onPress={onPressLogout}
           activeOpacity={0.5}
           style={styles.btnLogout}>
-          <Icon name="sign-out" color={'#fff'} size={30} />
+          <FontAwesomeIcon icon={faSignOutAlt} color="#fff" size={35} />
         </TouchableOpacity>
       ) : (
         <View style={styles.btnLogout} />

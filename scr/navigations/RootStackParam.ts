@@ -4,4 +4,5 @@ export type RootStackParams = {
   OTP: undefined;
   Rule: undefined;
   HomeScreen: undefined;
+  ScanBillScreen: undefined;
 };

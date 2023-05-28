@@ -29,20 +29,20 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation, route}) => {
 
   const onPressPlayFree = () => {
     setModalShow(false);
-    navigation.navigate('PlayGame', {playType: 'miễn phí'});
+    // navigation.navigate('PlayGame', {playType: 'miễn phí'});
   };
 
   const onPressPlayExchange = () => {
     setModalShow(false);
-    navigation.navigate('PlayGame', {playType: 'quy đổi'});
+    // navigation.navigate('PlayGame', {playType: 'quy đổi'});
   };
 
   const onPressCollection = () => {
-    navigation.navigate('Collection');
+    // navigation.navigate('Collection');
   };
 
   const onPressGiftDetail = () => {
-    navigation.navigate('GiftDetail');
+    // navigation.navigate('GiftDetail');
   };
 
   useEffect(() => {}, []);
@@ -184,7 +184,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation, route}) => {
         }}>
         <TouchableOpacity
           activeOpacity={0.6}
-          onPress={() => navigation.navigate('Tutorial')}>
+          // onPress={() => navigation.navigate('Tutorial')}
+        >
           <Text
             style={{
               color: '#FFDD00',
@@ -233,7 +234,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation, route}) => {
         <TouchableOpacity
           style={styles.btn}
           activeOpacity={0.6}
-          onPress={() => navigation.navigate('ScanBill')}>
+          onPress={() => navigation.navigate('ScanBillScreen')}>
           <Image source={require('../assets/imgs/btn_scanQR.png')} />
         </TouchableOpacity>
         <TouchableOpacity
