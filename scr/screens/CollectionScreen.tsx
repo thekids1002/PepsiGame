@@ -7,13 +7,17 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
+  Modal,
+  TouchableHighlight,
+  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Header from '../components/Header';
 import LabelCoins from '../components/LabelCoins';
-
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faMinus, faPlus} from '@fortawesome/free-solid-svg-icons';
 type CollectionScreenProps = {
   navigation: any;
   route: any;
@@ -31,8 +35,28 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
   const [sevenUpCount, setSevenUpCount] = useState(5);
   const [mirindaCount, setMirindaCount] = useState(2);
   const [giftCount, setGiftCount] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const getGiftNow = () => {};
+  const [modalVisible2, setModalVisible2] = useState(false);
+
+  const getGiftNow = () => {
+    openModal();
+  };
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+  const openModal2 = () => {
+    setModalVisible2(true);
+  };
+
+  const closeModal2 = () => {
+    setModalVisible2(false);
+  };
 
   const Background: React.FC = () => {
     return (
@@ -116,10 +140,11 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
       <Image
         source={require('../assets/imgs/infoCollection.png')}
         style={{
-          width: 260,
+          width: 200,
           height: 80,
           alignSelf: 'center',
           marginTop: 18,
+          resizeMode: 'contain',
         }}
       />
 
@@ -144,7 +169,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
               setGiftCount(newVal);
             }
           }}>
-          <Icon name="minus" color={'#fff'} size={12} />
+          <FontAwesomeIcon icon={faMinus} color="#fff" size={11} />
         </TouchableOpacity>
         <Text
           style={{
@@ -167,19 +192,150 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
               setGiftCount(newVal);
             }
           }}>
-          <Icon name="plus" color={'#fff'} size={12} />
+          <FontAwesomeIcon icon={faPlus} color="#fff" size={11} />
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity
         style={{
           alignSelf: 'center',
-          marginTop: 40,
+          marginTop: 10,
         }}
         activeOpacity={0.6}
         onPress={getGiftNow}>
         <Image source={require('../assets/imgs/btn_getGiftNow.png')} />
       </TouchableOpacity>
+      <Modal
+        statusBarTranslucent
+        animationType={'slide'}
+        transparent
+        visible={modalVisible}>
+        <View
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, .5)',
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <TouchableOpacity
+            activeOpacity={0.6}
+            style={{
+              alignItems: 'center',
+            }}>
+            <Image
+              source={require('../assets/imgs/popup_Gift.png')}
+              style={{}}
+            />
+          </TouchableOpacity>
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: 14,
+              fontWeight: 'bold',
+            }}>
+            Bạn có chắc muốn đổi
+          </Text>
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: 14,
+              fontWeight: 'bold',
+            }}>
+            <Text style={{color: '#FFDD00'}}>1 Combo</Text> hay không?
+          </Text>
+
+          <TouchableOpacity
+            onPress={() => {
+              closeModal();
+              openModal2();
+            }}
+            activeOpacity={0.6}
+            style={{
+              width: 100,
+              height: 50,
+              alignItems: 'center',
+              marginTop: 60,
+              position: 'absolute',
+              top: height * 0.58,
+            }}>
+            <Image
+              source={require('../assets/imgs/btn_doiqua.png')}
+              style={{
+                position: 'absolute',
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      <Modal
+        statusBarTranslucent
+        animationType={'slide'}
+        transparent
+        visible={modalVisible2}>
+        <View
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, .5)',
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <TouchableOpacity
+            activeOpacity={0.6}
+            style={{
+              alignItems: 'center',
+            }}>
+            <Image
+              source={require('../assets/imgs/popup_gift_coin.png')}
+              style={{
+                height: 285,
+                width: 282,
+                resizeMode: 'contain',
+              }}
+            />
+          </TouchableOpacity>
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: 14,
+              fontWeight: 'bold',
+            }}>
+            Bạn nhận được
+          </Text>
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: 14,
+              fontWeight: 'bold',
+            }}>
+            <Text style={{color: '#FFDD00'}}>300 Coins</Text>
+          </Text>
+
+          <TouchableOpacity
+            onPress={() => {
+              closeModal2();
+            }}
+            activeOpacity={0.6}
+            style={{
+              width: 20,
+              height: 20,
+              alignItems: 'center',
+              marginTop: 150,
+              position: 'absolute',
+              top: height * 0.58,
+            }}>
+            <Image
+              source={require('../assets/imgs/btn_close_popup.png')}
+              style={{
+                width: 20,
+                height: 20,
+                position: 'absolute',
+                resizeMode: 'contain',
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -187,9 +343,9 @@ export default CollectionScreen;
 
 const styles = StyleSheet.create({
   img: {
-    height: 210,
-    width: 80,
-    resizeMode: 'cover',
+    height: 160,
+    width: 70,
+    resizeMode: 'contain',
   },
   collectionQty: {
     color: '#fff',

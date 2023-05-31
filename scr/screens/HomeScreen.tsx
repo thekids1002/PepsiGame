@@ -19,6 +19,12 @@ type HomeScreenProps = {
 };
 
 const HomeScreen: React.FC<HomeScreenProps> = ({navigation, route}) => {
+  const [coins, setCoins] = useState(0);
+  const [pepsi, setPepsi] = useState(0);
+  const [up, set7Up] = useState(0);
+  const [mirinda, setmirinda] = useState(0);
+  const [roundfree, setRoundfree] = useState(3);
+  const [round, setRound] = useState(5);
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
   const [modalShow, setModalShow] = useState(false);
@@ -29,12 +35,24 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation, route}) => {
 
   const onPressPlayFree = () => {
     setModalShow(false);
-    navigation.navigate('PlayGameScreen', {playType: 'miễn phí'});
+    navigation.navigate('PlayGameScreen', {
+      playType: 'miễn phí',
+      coins: coins,
+      pepsi: pepsi,
+      up: up,
+      mirinda: mirinda,
+    });
   };
 
   const onPressPlayExchange = () => {
     setModalShow(false);
-    navigation.navigate('PlayGameScreen', {playType: 'quy đổi'});
+    navigation.navigate('PlayGameScreen', {
+      playType: 'miễn phí',
+      coins: coins,
+      pepsi: pepsi,
+      up: up,
+      mirinda: mirinda,
+    });
   };
 
   const onPressCollection = () => {
@@ -114,8 +132,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation, route}) => {
                 fontSize: 10,
               }}>
               Bạn còn{' '}
-              <Text style={{color: '#FEEEA4', fontWeight: 'bold'}}>3</Text> lượt
-              chơi
+              <Text style={{color: '#FEEEA4', fontWeight: 'bold'}}>
+                {roundfree}
+              </Text>{' '}
+              lượt chơi
             </Text>
           </TouchableOpacity>
 
@@ -149,8 +169,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation, route}) => {
                 fontSize: 10,
               }}>
               Bạn còn{' '}
-              <Text style={{color: '#FEEEA4', fontWeight: 'bold'}}>5</Text> lượt
-              chơi
+              <Text style={{color: '#FEEEA4', fontWeight: 'bold'}}>
+                {round}
+              </Text>{' '}
+              lượt chơi
             </Text>
           </TouchableOpacity>
 
