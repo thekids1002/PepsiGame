@@ -14,6 +14,7 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import * as ImagePicker from 'react-native-image-picker';
 import Header from '../components/Header';
+import GlobalStore from '../constrains/GlobalStore';
 
 type ScanBillScreenProps = {
   navigation: any;
@@ -57,11 +58,12 @@ const ScanBillScreen: React.FC<ScanBillScreenProps> = ({navigation, route}) => {
         const path = {uri: response.assets[0].uri};
         setBillImage(path);
         if (count % 2 == 0) {
-          setModalErrorShow(true);
           setModalSuccessShow(false);
+          setModalErrorShow(true);
         } else {
           setModalErrorShow(false);
           setModalSuccessShow(true);
+          GlobalStore.setRoundCount(GlobalStore.roundCount + 5);
         }
         setCount(count + 1);
       }
@@ -297,7 +299,7 @@ const ScanBillScreen: React.FC<ScanBillScreenProps> = ({navigation, route}) => {
       <Background />
       <StatusBar translucent backgroundColor={'rgba(0,0,0,0)'} />
       <ModalError />
-      <ModalSuccess playCount={8} />
+      <ModalSuccess playCount={GlobalStore.roundCount} />
       <Header
         navigation={navigation}
         title={'QUÉT MÃ'}

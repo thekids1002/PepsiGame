@@ -11,6 +11,7 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {randomNumber} from '../utils/Function';
 import Header from '../components/Header';
+import GlobalStore from '../constrains/GlobalStore';
 
 interface CongratulationScreenProps {
   navigation: any;
@@ -33,6 +34,18 @@ const CongratulationScreen: React.FC<CongratulationScreenProps> = ({
   const present = randomNumber(0, PRESENTS.length - 1);
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
+
+  if (present == 0) {
+    GlobalStore.setPepsiCount(GlobalStore.pepsiCount + 1);
+  }
+  if (present == 1) {
+    GlobalStore.setMirindaCount(GlobalStore.mirindaCount + 1);
+  }
+  if (present == 2) {
+    GlobalStore.setSevenUpCount(GlobalStore.sevenUpCount + 1);
+  }
+
+  GlobalStore.AddCoins(PRESENTS[present].coins);
 
   const onPressConfirm = () => {
     navigation.replace('HomeScreen');

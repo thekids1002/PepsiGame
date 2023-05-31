@@ -8,16 +8,13 @@ import {
   Image,
   TouchableOpacity,
   Modal,
-  TouchableHighlight,
-  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import Header from '../components/Header';
 import LabelCoins from '../components/LabelCoins';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faMinus, faPlus} from '@fortawesome/free-solid-svg-icons';
+import GlobalStore from '../constrains/GlobalStore';
 type CollectionScreenProps = {
   navigation: any;
   route: any;
@@ -31,9 +28,6 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
   const height = Dimensions.get('window').height;
 
   const [coinsLeft, setCoinsLeft] = useState(700);
-  const [pepsiCount, setPepsiCount] = useState(4);
-  const [sevenUpCount, setSevenUpCount] = useState(5);
-  const [mirindaCount, setMirindaCount] = useState(2);
   const [giftCount, setGiftCount] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -96,7 +90,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
         isButtonLogout
       />
 
-      <LabelCoins coins={coinsLeft} />
+      <LabelCoins coins={GlobalStore.coins} />
 
       <View
         style={{
@@ -113,7 +107,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
             style={styles.img}
             source={require('../assets/imgs/pepsi_an.png')}
           />
-          <Text style={styles.collectionQty}>{pepsiCount}</Text>
+          <Text style={styles.collectionQty}>{GlobalStore.pepsiCount}</Text>
         </View>
         <View
           style={{
@@ -123,7 +117,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
             style={styles.img}
             source={require('../assets/imgs/7up_loc.png')}
           />
-          <Text style={styles.collectionQty}>{sevenUpCount}</Text>
+          <Text style={styles.collectionQty}>{GlobalStore.sevenUpCount}</Text>
         </View>
         <View
           style={{
@@ -133,7 +127,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
             style={styles.img}
             source={require('../assets/imgs/mirinda_phuc.png')}
           />
-          <Text style={styles.collectionQty}>{mirindaCount}</Text>
+          <Text style={styles.collectionQty}>{GlobalStore.mirindaCount}</Text>
         </View>
       </View>
 
