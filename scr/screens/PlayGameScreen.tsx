@@ -36,8 +36,8 @@ const PlayGameScreen: React.FC<PlayGameScreenProps> = ({navigation, route}) => {
         });
       },
       onPanResponderMove: (event, gestureState) => {
-        const bottom = -60;
-        const top = -250;
+        const bottom = -50;
+        const top = -120;
         const y = (pan.y as any)._value;
         if (y < top) {
           navigation.replace('CongratulationsScreen');

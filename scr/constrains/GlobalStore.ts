@@ -23,6 +23,7 @@ class DrinkStore {
       decrementRoundCount: action,
       decrementFreeRoundCount: action,
       AddCoins: action,
+      exchangeCombo: action,
     });
   }
   AddCoins(amount: number) {
@@ -54,6 +55,30 @@ class DrinkStore {
 
   decrementFreeRoundCount() {
     this.freeRoundCount = Math.max(this.freeRoundCount - 1, 0);
+  }
+  exchangeCombo() {
+    this.sevenUpCount -= 1;
+    this.pepsiCount -= 1;
+    this.mirindaCount -= 1;
+    if (this.pepsiCount <= 0) {
+      this.pepsiCount = 0;
+    }
+    if (this.mirindaCount <= 0) {
+      this.mirindaCount = 0;
+    }
+    if (this.sevenUpCount <= 0) {
+      this.sevenUpCount = 0;
+    }
+  }
+  checkcombo(giftCount: number): any {
+    if (
+      giftCount <= this.sevenUpCount ||
+      giftCount <= this.pepsiCount ||
+      giftCount <= this.mirindaCount
+    ) {
+      return true;
+    }
+    return false;
   }
 }
 

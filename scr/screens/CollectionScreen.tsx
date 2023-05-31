@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   Modal,
+  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../components/Header';
@@ -15,6 +16,9 @@ import LabelCoins from '../components/LabelCoins';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faMinus, faPlus} from '@fortawesome/free-solid-svg-icons';
 import GlobalStore from '../constrains/GlobalStore';
+import {randomNumber} from '../utils/Function';
+import listGift from '../constrains/GlobleVar';
+import {globalState} from 'mobx/dist/internal';
 type CollectionScreenProps = {
   navigation: any;
   route: any;
@@ -32,7 +36,8 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
   const [modalVisible, setModalVisible] = useState(false);
 
   const [modalVisible2, setModalVisible2] = useState(false);
-
+  const [modalVisible3, setModalVisible3] = useState(false);
+  const present = randomNumber(0, listGift.length - 1);
   const getGiftNow = () => {
     openModal();
   };
@@ -50,6 +55,14 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
 
   const closeModal2 = () => {
     setModalVisible2(false);
+  };
+
+  const openModal3 = () => {
+    setModalVisible3(true);
+  };
+
+  const closeModal3 = () => {
+    setModalVisible3(false);
   };
 
   const Background: React.FC = () => {
@@ -153,7 +166,9 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
           style={[
             styles.button,
             {
-              backgroundColor: '#0063A7',
+              backgroundColor: !GlobalStore.checkcombo(giftCount)
+                ? '#D02027'
+                : '#0063A7',
             },
           ]}
           activeOpacity={0.6}
@@ -176,14 +191,18 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
           style={[
             styles.button,
             {
-              backgroundColor: '#D02027',
+              backgroundColor: GlobalStore.checkcombo(giftCount)
+                ? '#D02027'
+                : '#0063A7',
             },
           ]}
           activeOpacity={0.6}
           onPress={() => {
-            const newVal = giftCount + 1;
-            if (newVal >= 0) {
-              setGiftCount(newVal);
+            if (GlobalStore.checkcombo(giftCount)) {
+              const newVal = giftCount + 1;
+              if (newVal >= 0) {
+                setGiftCount(newVal);
+              }
             }
           }}>
           <FontAwesomeIcon icon={faPlus} color="#fff" size={11} />
@@ -235,13 +254,26 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
               fontSize: 14,
               fontWeight: 'bold',
             }}>
-            <Text style={{color: '#FFDD00'}}>1 Combo</Text> hay không?
+            <Text style={{color: '#FFDD00'}}>{giftCount} Combo</Text> hay không?
           </Text>
 
           <TouchableOpacity
             onPress={() => {
               closeModal();
-              openModal2();
+              if (
+                GlobalStore.pepsiCount > 0 &&
+                GlobalStore.mirindaCount > 0 &&
+                GlobalStore.mirindaCount > 0
+              ) {
+                if (randomNumber(0, 1) == 0) {
+                  openModal2();
+                } else {
+                  openModal3();
+                }
+                GlobalStore.exchangeCombo();
+              } else {
+                Alert.alert('Thông báo', 'Bạn không đủ combo để đổi');
+              }
             }}
             activeOpacity={0.6}
             style={{
@@ -308,6 +340,88 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
           <TouchableOpacity
             onPress={() => {
               closeModal2();
+            }}
+            activeOpacity={0.6}
+            style={{
+              width: 20,
+              height: 20,
+              alignItems: 'center',
+              marginTop: 150,
+              position: 'absolute',
+              top: height * 0.58,
+            }}>
+            <Image
+              source={require('../assets/imgs/btn_close_popup.png')}
+              style={{
+                width: 20,
+                height: 20,
+                position: 'absolute',
+                resizeMode: 'contain',
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      {/* Modal 3 */}
+
+      <Modal
+        statusBarTranslucent
+        animationType={'slide'}
+        transparent
+        visible={modalVisible3}>
+        <View
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, .5)',
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <TouchableOpacity
+            activeOpacity={0.6}
+            style={{
+              alignItems: 'center',
+            }}>
+            <Image
+              source={require('../assets/imgs/popup_gift_no_item.png')}
+              style={{
+                height: 285,
+                width: 282,
+                resizeMode: 'contain',
+              }}
+            />
+
+            <Image
+              source={listGift[present].image}
+              style={{
+                height: 160,
+                width: 117,
+                position: 'absolute',
+                top: height * 0.1,
+                resizeMode: 'contain',
+              }}
+            />
+          </TouchableOpacity>
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: 14,
+              fontWeight: 'bold',
+            }}>
+            Bạn nhận được
+          </Text>
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: 14,
+              fontWeight: 'bold',
+            }}>
+            <Text style={{color: '#FFDD00'}}>{listGift[present].name}</Text>
+          </Text>
+
+          <TouchableOpacity
+            onPress={() => {
+              closeModal3();
             }}
             activeOpacity={0.6}
             style={{
