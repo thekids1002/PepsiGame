@@ -72,9 +72,9 @@ class DrinkStore {
   }
   checkcombo(giftCount: number): any {
     if (
-      giftCount <= this.sevenUpCount ||
-      giftCount <= this.pepsiCount ||
-      giftCount <= this.mirindaCount
+      giftCount < this.sevenUpCount &&
+      giftCount < this.pepsiCount &&
+      giftCount < this.mirindaCount
     ) {
       return true;
     }

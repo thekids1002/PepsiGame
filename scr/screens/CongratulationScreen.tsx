@@ -45,7 +45,7 @@ const CongratulationScreen: React.FC<CongratulationScreenProps> = ({
     GlobalStore.setSevenUpCount(GlobalStore.sevenUpCount + 1);
   }
 
-  GlobalStore.AddCoins(PRESENTS[present].coins);
+  // GlobalStore.AddCoins(PRESENTS[present].coins);
 
   const onPressConfirm = () => {
     navigation.replace('HomeScreen');

@@ -220,7 +220,7 @@ const ScanBillScreen: React.FC<ScanBillScreenProps> = ({navigation, route}) => {
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={0.6}
-              onPress={() => navigation.replace('Home')}>
+              onPress={() => navigation.replace('HomeScreen')}>
               <Image
                 source={require('../assets/imgs/btn_play_now.png')}
                 style={{

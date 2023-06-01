@@ -267,6 +267,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
               ) {
                 if (randomNumber(0, 1) == 0) {
                   openModal2();
+                  GlobalStore.AddCoins(300);
                 } else {
                   openModal3();
                 }
