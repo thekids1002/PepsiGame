@@ -11,6 +11,8 @@ import ScanBillScreen from '../screens/ScanBillScreen';
 import PlayGameScreen from '../screens/PlayGameScreen';
 import CollectionScreen from '../screens/CollectionScreen';
 import CongratulationScreen from '../screens/CongratulationScreen';
+import TutorialScreen from '../screens/TutorialScreen';
+import GiftDetailScreen from '../screens/GiftDetailScreen';
 
 const Stack = createNativeStackNavigator<RootStackParams>();
 
@@ -32,6 +34,8 @@ const RootStackNavigation = () => {
           name="CongratulationsScreen"
           component={CongratulationScreen}
         />
+        <Stack.Screen name="TutorialScreen" component={TutorialScreen} />
+        <Stack.Screen name="GiftDetailScreen" component={GiftDetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

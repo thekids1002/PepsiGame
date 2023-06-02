@@ -57,7 +57,7 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
     };
 
     const onPressGiftDetail = () => {
-      // navigation.navigate('GiftDetail');
+      navigation.navigate('GiftDetailScreen');
     };
 
     useEffect(() => {}, []);
