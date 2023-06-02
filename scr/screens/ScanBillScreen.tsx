@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import RNQRGenerator from 'rn-qr-generator';
 import {
   StyleSheet,
   TouchableOpacity,
@@ -15,6 +16,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import * as ImagePicker from 'react-native-image-picker';
 import Header from '../components/Header';
 import GlobalStore from '../constrains/GlobalStore';
+import {Alert} from 'react-native';
 
 type ScanBillScreenProps = {
   navigation: any;
@@ -30,7 +32,7 @@ const ScanBillScreen: React.FC<ScanBillScreenProps> = ({navigation, route}) => {
   const [modalErrorShow, setModalErrorShow] = useState(false);
   const [modalSuccessShow, setModalSuccessShow] = useState(false);
   const [count, setCount] = useState(0);
-
+  const [path, setPath]: any = useState(false);
   useEffect(() => {
     // takePicture();
   }, []);
@@ -56,18 +58,43 @@ const ScanBillScreen: React.FC<ScanBillScreenProps> = ({navigation, route}) => {
       } else {
         console.log(response);
         const path = {uri: response.assets[0].uri};
+        setPath(path);
+
         setBillImage(path);
-        if (count % 2 == 0) {
-          setModalSuccessShow(false);
-          setModalErrorShow(true);
-        } else {
-          setModalErrorShow(false);
-          setModalSuccessShow(true);
-          GlobalStore.setRoundCount(GlobalStore.roundCount + 5);
-        }
+        RNQRGenerator.detect({
+          uri: response.assets[0].uri,
+        })
+          .then(response => {
+            const {values} = response; // Array of detected QR code values. Empty if nothing found.
+
+            const message = values.join(', '); // Concatenate the array elements with a comma separator
+            if (message != null && message !== undefined && message != '') {
+              console.log('kkkkkkk' + message);
+              setModalErrorShow(false);
+              setModalSuccessShow(true);
+              GlobalStore.setRoundCount(GlobalStore.roundCount + 5);
+            } else {
+              setModalSuccessShow(false);
+              setModalErrorShow(true);
+            }
+          })
+          .catch(error => console.log('Cannot detect QR code in image', error));
+        // if (count % 2 == 0) {
+        //   setModalSuccessShow(false);
+        //   setModalErrorShow(true);
+        // } else {
+        //   setModalErrorShow(false);
+        //   setModalSuccessShow(true);
+        //   GlobalStore.setRoundCount(GlobalStore.roundCount + 5);
+        // }
         setCount(count + 1);
       }
     });
+  };
+
+  const handleRescan = () => {
+    setModalErrorShow(false);
+    takePicture();
   };
 
   const validateQRCode = () => {
@@ -117,7 +144,7 @@ const ScanBillScreen: React.FC<ScanBillScreenProps> = ({navigation, route}) => {
               height: 146 * 1.2,
             }}
           />
-          <TouchableOpacity activeOpacity={0.6} onPress={takePicture}>
+          <TouchableOpacity activeOpacity={0.6} onPress={handleRescan}>
             <Image
               source={require('../assets/imgs/btn_reScan.png')}
               style={{

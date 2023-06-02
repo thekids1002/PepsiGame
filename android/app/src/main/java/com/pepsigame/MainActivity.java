@@ -1,5 +1,5 @@
 package com.pepsigame;
-
+import com.gevorg.reactlibrary.RNQrGeneratorPackage;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
