@@ -325,8 +325,7 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
           }}>
           <TouchableOpacity
             activeOpacity={0.6}
-            // onPress={() => navigation.navigate('Tutorial')}
-          >
+            onPress={() => navigation.navigate('TutorialScreen')}>
             <Text
               style={{
                 color: '#FFDD00',
