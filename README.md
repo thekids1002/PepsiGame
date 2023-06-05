@@ -11,7 +11,8 @@
         
         .image-container img {
             margin: 10px;
-            width: 300px;
+            width: 100%;
+            max-width: 300px;
             height: auto;
             object-fit: cover;
             border-radius: 5px;
