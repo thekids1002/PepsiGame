@@ -34,11 +34,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation, route}) => {
   const onPressLogin = async () => {
     try {
       const confirm = await auth().signInWithPhoneNumber('+84' + phoneNumber);
-      console.log(JSON.stringify(confirm, null, 2));
+      // console.log(JSON.stringify(confirm, null, 2));
       navigation.navigate('OTP', {confirm, phoneNumber: '+84' + phoneNumber});
-    } catch (error: any) {
-      console.log(error);
-    }
+    } catch (error: any) {}
   };
 
   const isPhoneNumber = (phoneNumber: string): boolean => {

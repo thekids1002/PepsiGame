@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -37,8 +37,13 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
 
   const [modalVisible2, setModalVisible2] = useState(false);
   const [modalVisible3, setModalVisible3] = useState(false);
-  const present = randomNumber(0, listGift.length - 1);
+  const [present, setPresent] = useState(
+    randomNumber(0, GlobalStore.listGift.length - 1),
+  );
   const getGiftNow = () => {
+    if (giftCount == 0) {
+      return;
+    }
     openModal();
   };
   const openModal = () => {
@@ -50,6 +55,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
   };
 
   const openModal2 = () => {
+    GlobalStore.AddCoins(300);
     setModalVisible2(true);
   };
 
@@ -57,12 +63,25 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
     setModalVisible2(false);
   };
 
+  useEffect(() => {
+    console.log('present 1 : ' + present);
+  }, [present]);
+
   const openModal3 = () => {
     setModalVisible3(true);
+    console.log('present 2 : ' + present);
+    GlobalStore.updateOrAddCollection({
+      name: GlobalStore.listGift[present].name,
+      qty: 1,
+      image: GlobalStore.listGift[present].image,
+      price: GlobalStore.listGift[present].price,
+      status: false,
+    });
   };
 
   const closeModal3 = () => {
     setModalVisible3(false);
+    setPresent(randomNumber(0, GlobalStore.listGift.length - 1));
   };
 
   const Background: React.FC = () => {
@@ -260,6 +279,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
           <TouchableOpacity
             onPress={() => {
               closeModal();
+
               if (
                 GlobalStore.pepsiCount > 0 &&
                 GlobalStore.mirindaCount > 0 &&
@@ -267,7 +287,6 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
               ) {
                 if (randomNumber(0, 1) == 0) {
                   openModal2();
-                  GlobalStore.AddCoins(300);
                 } else {
                   openModal3();
                 }
@@ -393,7 +412,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
             />
 
             <Image
-              source={listGift[present].image}
+              source={{uri: GlobalStore.listGift[present].image}}
               style={{
                 height: 160,
                 width: 117,
@@ -417,7 +436,9 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
               fontSize: 14,
               fontWeight: 'bold',
             }}>
-            <Text style={{color: '#FFDD00'}}>{listGift[present].name}</Text>
+            <Text style={{color: '#FFDD00'}}>
+              {GlobalStore.listGift[present].name}
+            </Text>
           </Text>
 
           <TouchableOpacity

@@ -16,6 +16,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import LabelCoins from '../components/LabelCoins';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Header from '../components/Header';
+import GlobalStore from '../constrains/GlobalStore';
 
 interface Gift {
   name: string;
@@ -45,13 +46,12 @@ const GiftDetailScreen: React.FC<any> = ({navigation, route}) => {
 
   const [tabType, setTabType] = useState<number>(0);
 
-  const [myCoins, setMyCoins] = useState<number>(700);
   const [modalInfomationShow, setModalInfomationShow] =
     useState<boolean>(false);
   const [modalSuccessfullyShow, setModalSuccessfullyShow] =
     useState<boolean>(false);
 
-  const [giftSelected, setGiftSelected] = useState<Gift | string>('');
+  const [giftSelected, setGiftSelected] = useState<Gift>();
   const [fullname, setFullname] = useState<string>('Võ Hoàng Kiệt');
   const [phoneNumber, setPhoneNumber] = useState<string>('0396527908');
   const [address, setAddress] = useState<string>('Long An');
@@ -62,7 +62,7 @@ const GiftDetailScreen: React.FC<any> = ({navigation, route}) => {
   const [errAddress, setErrAddress] = useState<boolean>(false);
 
   const onPressGetExchange = (item: Gift) => {
-    setGiftSelected(item.name);
+    setGiftSelected(item);
     setModalInfomationShow(true);
     //console.log(item);
   };
@@ -89,90 +89,16 @@ const GiftDetailScreen: React.FC<any> = ({navigation, route}) => {
     if (validForm) {
       setModalInfomationShow(false);
       setModalSuccessfullyShow(true);
+      GlobalStore.findAndDecreaseGiftQuantity(gift.name);
+      GlobalStore.updateOrAddCollection({
+        name: gift.name,
+        qty: 1,
+        image: gift.image,
+        price: gift.price,
+        status: Math.random() < 0.5,
+      });
     }
   };
-  const listGift = [
-    {
-      name: 'Pepsi Bucket Hat',
-      qty: 600,
-      image:
-        'https://raw.githubusercontent.com/thekids1002/PepsiGame/main/scr/assets/imgs/pepsi_hat.png',
-      price: 80,
-    },
-    {
-      name: 'Pepsi Jacket',
-      qty: 10,
-      image:
-        'https://raw.githubusercontent.com/thekids1002/PepsiGame/main/scr/assets/imgs/pepsi_jacket.png',
-      price: 300,
-    },
-    {
-      name: 'Pepsi Tote Bag',
-      qty: 800,
-      image:
-        'https://raw.githubusercontent.com/thekids1002/PepsiGame/main/scr/assets/imgs/pepsi_bag.png',
-      price: 80,
-    },
-    {
-      name: 'Pepsi Tumbler',
-      qty: 500,
-      image:
-        'https://raw.githubusercontent.com/thekids1002/PepsiGame/main/scr/assets/imgs/pepsi_tumbler.png',
-      price: 300,
-    },
-    {
-      name: 'Airpod case (Black Pink)',
-      qty: 20,
-      image:
-        'https://raw.githubusercontent.com/thekids1002/PepsiGame/main/scr/assets/imgs/airpod.png',
-      price: 150,
-    },
-    {
-      name: 'Electronic lunch bo',
-      qty: 5,
-      image:
-        'https://raw.githubusercontent.com/thekids1002/PepsiGame/main/scr/assets/imgs/electronic_lun_bo.png',
-      price: 800,
-    },
-    {
-      name: 'Portable Speaker',
-      qty: 3,
-      image:
-        'https://raw.githubusercontent.com/thekids1002/PepsiGame/main/scr/assets/imgs/portable_speaker.png',
-      price: 1000,
-    },
-  ];
-
-  const listCollection = [
-    {
-      name: 'Pepsi Bucket Hat',
-      qty: 1,
-      image:
-        'https://raw.githubusercontent.com/thekids1002/PepsiGame/main/scr/assets/imgs/pepsi_hat.png',
-      status: true,
-    },
-    {
-      name: 'Pepsi Jacket',
-      qty: 2,
-      image:
-        'https://raw.githubusercontent.com/thekids1002/PepsiGame/main/scr/assets/imgs/pepsi_jacket.png',
-      status: false,
-    },
-    {
-      name: 'Pepsi Tote Bag',
-      qty: 2,
-      image:
-        'https://raw.githubusercontent.com/thekids1002/PepsiGame/main/scr/assets/imgs/pepsi_bag.png',
-      status: true,
-    },
-    {
-      name: 'Pepsi Tumbler',
-      qty: 3,
-      image:
-        'https://raw.githubusercontent.com/thekids1002/PepsiGame/main/scr/assets/imgs/pepsi_tumbler.png',
-      status: false,
-    },
-  ];
 
   // const listCollection = [];
 
@@ -227,7 +153,7 @@ const GiftDetailScreen: React.FC<any> = ({navigation, route}) => {
   };
 
   const GiftItem = ({item}: GiftItemProps) => {
-    const isDisabled = item.price > myCoins;
+    const isDisabled = item.price > GlobalStore.coins;
     return (
       <View
         style={{
@@ -522,18 +448,18 @@ const GiftDetailScreen: React.FC<any> = ({navigation, route}) => {
           style={{
             paddingHorizontal: 24,
           }}
-          data={listGift}
+          data={GlobalStore.listGift}
           numColumns={2}
           renderItem={({item}) => <GiftItem item={item} />}
           keyExtractor={item => item.name}
-          ListHeaderComponent={<LabelCoins coins={myCoins} />}
+          ListHeaderComponent={<LabelCoins coins={GlobalStore.coins} />}
         />
-      ) : listCollection.length != 0 ? (
+      ) : GlobalStore.listCollection.length != 0 ? (
         <FlatList
           style={{
             paddingHorizontal: 24,
           }}
-          data={listCollection}
+          data={GlobalStore.listCollection}
           numColumns={2}
           renderItem={({item}) => <MyCollection item={item} />}
           keyExtractor={item => item.name}
@@ -640,7 +566,7 @@ const GiftDetailScreen: React.FC<any> = ({navigation, route}) => {
                   style={{
                     color: '#D02027',
                   }}>
-                  {giftSelected.toString()}
+                  {giftSelected?.name}
                 </Text>
               </Text>
 

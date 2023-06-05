@@ -317,7 +317,7 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
         <View
           style={{
             position: 'absolute',
-            top: height * 0.5,
+            top: height * 0.52,
             left: 0,
             right: 0,
             alignItems: 'center',
