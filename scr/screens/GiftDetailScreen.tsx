@@ -54,7 +54,7 @@ const GiftDetailScreen: React.FC<any> = ({navigation, route}) => {
   const [giftSelected, setGiftSelected] = useState<Gift>();
   const [fullname, setFullname] = useState<string>('Võ Hoàng Kiệt');
   const [phoneNumber, setPhoneNumber] = useState<string>('0396527908');
-  const [address, setAddress] = useState<string>('Long An');
+  const [address, setAddress] = useState<string>('');
   const [description, setDescription] = useState<string>('');
 
   const [errFullname, setErrFullname] = useState<boolean>(false);

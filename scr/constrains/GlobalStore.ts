@@ -121,9 +121,9 @@ class DrinkStore {
     this.mirindaCount = count;
   }
 
-  setRoundCount(count: number) {
+  setRoundCount = async (count: number) => {
     this.roundCount = count;
-  }
+  };
 
   setFreeRoundCount(count: number) {
     this.freeRoundCount = count;

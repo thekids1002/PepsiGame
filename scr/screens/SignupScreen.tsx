@@ -104,9 +104,11 @@ const SignupScreen = ({navigation, route}: Props) => {
       marginStart: 4,
     },
     ruleLinkText: {
+      alignSelf: 'center',
       fontWeight: 'bold',
       color: Colors.kYellowColor,
       fontSize: 12.5,
+      marginTop: 10,
     },
     input: {
       backgroundColor: '#fff',
@@ -154,8 +156,11 @@ const SignupScreen = ({navigation, route}: Props) => {
             />
             <Text style={styles.checkboxText}>
               Tôi đã đọc và đồng ý với
-              <TouchableOpacity activeOpacity={0.8} onPress={onPressViewRule}>
-                <Text style={styles.ruleLinkText}> thể lệ chương trình </Text>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={{}}
+                onPress={onPressViewRule}>
+                <Text style={[styles.ruleLinkText]}>thể lệ chương trình </Text>
               </TouchableOpacity>
               Pepsi Tết.
             </Text>

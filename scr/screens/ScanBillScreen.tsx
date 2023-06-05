@@ -69,10 +69,10 @@ const ScanBillScreen: React.FC<ScanBillScreenProps> = ({navigation, route}) => {
 
             const message = values.join(', '); // Concatenate the array elements with a comma separator
             if (message != null && message !== undefined && message != '') {
-              console.log('kkkkkkk' + message);
+              GlobalStore.setRoundCount(GlobalStore.roundCount + 5);
+
               setModalErrorShow(false);
               setModalSuccessShow(true);
-              GlobalStore.setRoundCount(GlobalStore.roundCount + 5);
             } else {
               setModalSuccessShow(false);
               setModalErrorShow(true);
@@ -87,7 +87,7 @@ const ScanBillScreen: React.FC<ScanBillScreenProps> = ({navigation, route}) => {
         //   setModalSuccessShow(true);
         //   GlobalStore.setRoundCount(GlobalStore.roundCount + 5);
         // }
-        setCount(count + 1);
+        // setCount(count + 1);
       }
     });
   };
@@ -227,7 +227,7 @@ const ScanBillScreen: React.FC<ScanBillScreenProps> = ({navigation, route}) => {
                   fontWeight: 'bold',
                   color: '#005082',
                 }}>
-                {playCount < 10 ? '0' + playCount : playCount}
+                {GlobalStore.roundCount}
               </Text>
               {' lượt chơi'}
             </Text>

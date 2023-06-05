@@ -117,9 +117,10 @@ const RulesScreen: React.FC<RulesScreenProps> = ({navigation, route}) => {
 
         <ScrollView style={{flex: 1}}>
           <Text style={styles.content}>
-            {content.map((item, index) => {
+            {/* {content.map((item, index) => {
               return <Text key={index}>{item + '\n\n'}</Text>;
-            })}
+            })} */}
+            <Text>{content}</Text>
           </Text>
         </ScrollView>
       </View>

@@ -36,7 +36,6 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
       setModalShow(false);
       if (GlobalStore.freeRoundCount == 0) {
         setModalHetLuot(true);
-
         return;
       }
       GlobalStore.decrementFreeRoundCount();
@@ -46,6 +45,7 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
     const onPressPlayExchange = () => {
       setModalShow(false);
       if (GlobalStore.roundCount == 0) {
+        setModalHetLuot(true);
         return;
       }
       GlobalStore.decrementRoundCount();
