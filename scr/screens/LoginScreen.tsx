@@ -14,7 +14,6 @@ import BackgroundForm from '../components/BackgroundForm';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParams} from '../navigations/RootStackParam';
 import auth from '@react-native-firebase/auth';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 type LoginScreenProps = {
   navigation: any;
@@ -33,11 +32,16 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation, route}) => {
 
   const onPressLogin = async () => {
     try {
+      console.log('Number ' + '+84' + phoneNumber);
       const confirm = await auth().signInWithPhoneNumber('+84' + phoneNumber);
-      // console.log(JSON.stringify(confirm, null, 2));
-      navigation.navigate('OTP', {confirm, phoneNumber: '+84' + phoneNumber});
-    } catch (error: any) {}
+      navigation.replace('OTP', {confirm, phoneNumber: '+84' + phoneNumber});
+    } catch (error: any) {
+      Alert.alert('Error', error + '');
+      console.log(error);
+    }
   };
+
+  useEffect(() => {}, []);
 
   const isPhoneNumber = (phoneNumber: string): boolean => {
     const regex: RegExp = /^([0])+([0-9]{9})\b$/;

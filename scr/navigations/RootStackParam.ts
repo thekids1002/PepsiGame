@@ -2,6 +2,7 @@ export type RootStackParams = {
   LoginScreen: undefined;
   SignupScreen: undefined;
   OTP: undefined;
+  OTPSign: undefined;
   Rule: undefined;
   HomeScreen: undefined;
   ScanBillScreen: undefined;

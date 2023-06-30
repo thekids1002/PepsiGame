@@ -21,6 +21,7 @@ class DrinkStore {
   sevenUpCount = 0;
   mirindaCount = 0;
   coins = 500;
+  numberphone = '';
   listGift: Gift[] = [
     {
       name: 'Pepsi Bucket Hat',
@@ -90,6 +91,7 @@ class DrinkStore {
       sevenUpCount: observable,
       mirindaCount: observable,
       coins: observable,
+      numberphone: observable,
       listGift: observable,
       listCollection: observable,
       setRoundCount: action,
@@ -104,6 +106,7 @@ class DrinkStore {
       addGiftToStore: action,
       updateOrAddCollection: action,
       findAndDecreaseGiftQuantity: action,
+      setnumberPhone: action,
     });
   }
   AddCoins(amount: number) {
@@ -111,6 +114,9 @@ class DrinkStore {
   }
   setPepsiCount(count: number) {
     this.pepsiCount = count;
+  }
+  setnumberPhone(number: string) {
+    this.numberphone = number;
   }
 
   setSevenUpCount(count: number) {

@@ -17,10 +17,14 @@ import LoadingDialog from '../components/LoadingDialog';
 import {isPhoneNumber, isPersonName} from '../utils/Function';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParams} from '../navigations/RootStackParam';
+import auth from '@react-native-firebase/auth';
 
-type Props = NativeStackScreenProps<RootStackParams, 'SignupScreen'>;
+type SignupScreenProp = {
+  navigation: any;
+  route: any;
+};
 
-const SignupScreen = ({navigation, route}: Props) => {
+const SignupScreen: React.FC<SignupScreenProp> = ({navigation, route}) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
@@ -41,8 +45,19 @@ const SignupScreen = ({navigation, route}: Props) => {
   const handleCloseAlert = () => {
     setShowAlert(false);
   };
-  const onPressSigup = () => {
-    Alert.alert('Thông báo', 'Chức năng đang phát triển');
+  const onPressSigup = async () => {
+    try {
+      console.log('Number ' + '+84' + phoneNumber);
+      const confirm = await auth().signInWithPhoneNumber('+84' + phoneNumber);
+      navigation.replace('OTPSign', {
+        confirm,
+        phoneNumber: '+84' + phoneNumber,
+        Name: fullname,
+      });
+    } catch (error: any) {
+      Alert.alert('Error', error + '');
+      console.log(error);
+    }
   };
 
   const onPressLogin = () => {
@@ -111,6 +126,7 @@ const SignupScreen = ({navigation, route}: Props) => {
       marginTop: 10,
     },
     input: {
+      color: 'black',
       backgroundColor: '#fff',
       marginVertical: 10,
       borderRadius: 10,

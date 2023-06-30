@@ -14,22 +14,22 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import BackgroundForm from '../components/BackgroundForm';
 import auth from '@react-native-firebase/auth';
-import {RootState} from '../app/store';
+import firestore from '@react-native-firebase/firestore';
 import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../app/store';
 import {Action, ThunkDispatch} from '@reduxjs/toolkit';
 import {fetchUser} from '../features/user/userSlice';
-
 type OTPScreenProps = {
   navigation: any;
   route: any;
 };
 
-const OTPScreen: React.FC<OTPScreenProps> = ({navigation, route}) => {
+const OTPScreenSign: React.FC<OTPScreenProps> = ({navigation, route}) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
   const {confirm, phoneNumber} = route.params;
-
+  const fullName = route.params.Name;
   const [otpCode, setOtpCode] = useState<(number | null)[]>([
     null,
     null,
@@ -90,10 +90,26 @@ const OTPScreen: React.FC<OTPScreenProps> = ({navigation, route}) => {
   };
 
   // Handle login
-  // vì hiện tại OTP khi nhận, máy sẽ tự động verify, không cần người dùng nhập   vào
+  // vì hiện tại OTP khi nhận, máy sẽ tự động verify, không cần người dùng nhập vào
   // nên sẽ lỗi sms otp expired, ở đây hàm này sẽ tự nhận và verify xong vào luôn màn hình home.
   async function onAuthStateChanged(user: any) {
     if (user) {
+      firestore()
+        .collection('Users')
+        .add({
+          Phone: phoneNumber + '',
+          Name: fullName + '',
+          roundCount: 0,
+          freeRoundCount: 5,
+          pepsiCount: 0,
+          sevenUpCount: 0,
+          mirindaCount: 0,
+          coins: 0,
+          collections: [],
+        })
+        .then(() => {
+          console.log('User added!');
+        });
       await dispatch(fetchUser(phoneNumber));
       navigation.replace('HomeScreen');
     }
@@ -115,7 +131,24 @@ const OTPScreen: React.FC<OTPScreenProps> = ({navigation, route}) => {
     otpCode.forEach(item => (otp += item !== null ? item.toString() : ''));
     try {
       if (await confirm.confirm(otp)) {
-        await dispatch(fetchUser(phoneNumber));
+        const user_phonenumber = auth().currentUser?.phoneNumber;
+        firestore()
+          .collection('Users')
+          .add({
+            Phone: user_phonenumber + '',
+            Name: fullName + '',
+            roundCount: 0,
+            freeRoundCount: 5,
+            pepsiCount: 0,
+            sevenUpCount: 0,
+            mirindaCount: 0,
+            coins: 0,
+            collections: [],
+          })
+          .then(() => {
+            console.log('User added!');
+          });
+
         navigation.replace('HomeScreen');
       }
     } catch (e) {
@@ -266,7 +299,7 @@ const OTPScreen: React.FC<OTPScreenProps> = ({navigation, route}) => {
   );
 };
 
-export default OTPScreen;
+export default OTPScreenSign;
 
 const styles = StyleSheet.create({
   otp: {

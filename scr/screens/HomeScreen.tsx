@@ -15,6 +15,11 @@ import BackgroundHome from '../components/BackgroundHome';
 import Header from '../components/Header';
 import {observer} from 'mobx-react';
 import GlobalStore from '../constrains/GlobalStore';
+import {firebase} from '@react-native-firebase/database';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../app/store';
+import {Action, ThunkDispatch} from '@reduxjs/toolkit';
+import {decrementFreeRoundCount} from '../features/user/userSlice';
 
 type HomeScreenProps = {
   navigation: any;
@@ -27,24 +32,26 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
     const height = Dimensions.get('window').height;
     const [modalShow, setModalShow] = useState(false);
     const [modalHetLuot, setModalHetLuot] = useState(false);
-
+    const infouser = useSelector((state: RootState) => state.user.user);
+    const dispatch = useDispatch<ThunkDispatch<RootState, any, Action>>();
     const onPressPlay = () => {
       setModalShow(true);
     };
 
     const onPressPlayFree = () => {
       setModalShow(false);
-      if (GlobalStore.freeRoundCount == 0) {
+      if (infouser?.freeRoundCount == 0) {
         setModalHetLuot(true);
         return;
       }
-      GlobalStore.decrementFreeRoundCount();
+
+      dispatch(decrementFreeRoundCount());
       navigation.navigate('PlayGameScreen', {playType: 'miễn phí'});
     };
 
     const onPressPlayExchange = () => {
       setModalShow(false);
-      if (GlobalStore.roundCount == 0) {
+      if (infouser?.roundCount == 0) {
         setModalHetLuot(true);
         return;
       }
@@ -110,7 +117,7 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
               }}>
               <Image
                 source={
-                  GlobalStore.freeRoundCount == 0
+                  infouser?.freeRoundCount == 0
                     ? require('../assets/imgs/btn_play_noflower_disabled.png')
                     : require('../assets/imgs/btn_play_noflower_active.png')
                 }
@@ -135,7 +142,7 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
                 }}>
                 Bạn còn{' '}
                 <Text style={{color: '#FEEEA4', fontWeight: 'bold'}}>
-                  {GlobalStore.freeRoundCount}
+                  {infouser?.freeRoundCount}
                 </Text>{' '}
                 lượt chơi
               </Text>
@@ -152,7 +159,7 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
               }}>
               <Image
                 source={
-                  GlobalStore.roundCount == 0
+                  infouser?.roundCount == 0
                     ? require('../assets/imgs/btn_play_noflower_disabled.png')
                     : require('../assets/imgs/btn_play_noflower_active.png')
                 }
@@ -176,7 +183,7 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
                 }}>
                 Bạn còn{' '}
                 <Text style={{color: '#FEEEA4', fontWeight: 'bold'}}>
-                  {GlobalStore.roundCount}
+                  {infouser?.roundCount}
                 </Text>{' '}
                 lượt chơi
               </Text>
@@ -367,7 +374,7 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
               }}>
               Bạn còn{' '}
               <Text style={{color: '#FEEEA4', fontWeight: 'bold'}}>
-                {GlobalStore.roundCount + GlobalStore.freeRoundCount}
+                {infouser?.freeRoundCount + infouser?.roundCount}
               </Text>{' '}
               lượt chơi
             </Text>
