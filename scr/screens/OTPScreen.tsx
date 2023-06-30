@@ -18,7 +18,7 @@ import {RootState} from '../app/store';
 import {useDispatch, useSelector} from 'react-redux';
 import {Action, ThunkDispatch} from '@reduxjs/toolkit';
 import {fetchUser} from '../features/user/userSlice';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 type OTPScreenProps = {
   navigation: any;
   route: any;
@@ -92,17 +92,17 @@ const OTPScreen: React.FC<OTPScreenProps> = ({navigation, route}) => {
   // Handle login
   // vì hiện tại OTP khi nhận, máy sẽ tự động verify, không cần người dùng nhập   vào
   // nên sẽ lỗi sms otp expired, ở đây hàm này sẽ tự nhận và verify xong vào luôn màn hình home.
-  async function onAuthStateChanged(user: any) {
-    if (user) {
-      await dispatch(fetchUser(phoneNumber));
-      navigation.replace('HomeScreen');
-    }
-  }
+  // async function onAuthStateChanged(user: any) {
+  //   if (user) {
+  //     await dispatch(fetchUser(phoneNumber));
+  //     navigation.replace('HomeScreen');
+  //   }
+  // }
 
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-  }, []);
+  // useEffect(() => {
+  //   const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+  //   return subscriber; // unsubscribe on unmount
+  // }, []);
 
   const onPressResendOTP = () => {
     setOtpCorrect(true);
@@ -116,14 +116,21 @@ const OTPScreen: React.FC<OTPScreenProps> = ({navigation, route}) => {
     try {
       if (await confirm.confirm(otp)) {
         await dispatch(fetchUser(phoneNumber));
-        navigation.replace('HomeScreen');
+        await AsyncStorage.setItem('phoneNumber', phoneNumber);
       }
     } catch (e) {
       Alert.alert('Thông báo', e + '');
     }
   };
 
-  useEffect(() => {}, []);
+ 
+  useEffect(() => {
+    if (dataUser != null && dataUser != undefined) {
+      navigation.replace('HomeScreen');
+    }
+  }, [dataUser]);
+
+ 
 
   return (
     <SafeAreaView style={{flex: 1}}>

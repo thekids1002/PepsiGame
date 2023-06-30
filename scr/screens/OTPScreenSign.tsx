@@ -19,6 +19,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../app/store';
 import {Action, ThunkDispatch} from '@reduxjs/toolkit';
 import {fetchUser} from '../features/user/userSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 type OTPScreenProps = {
   navigation: any;
   route: any;

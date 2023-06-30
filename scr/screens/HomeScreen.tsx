@@ -20,7 +20,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../app/store';
 import {Action, ThunkDispatch} from '@reduxjs/toolkit';
 import {decrementFreeRoundCount} from '../features/user/userSlice';
-
+import auth from '@react-native-firebase/auth';
 type HomeScreenProps = {
   navigation: any;
   route: any;

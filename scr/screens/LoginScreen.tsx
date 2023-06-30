@@ -14,7 +14,11 @@ import BackgroundForm from '../components/BackgroundForm';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParams} from '../navigations/RootStackParam';
 import auth from '@react-native-firebase/auth';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../app/store';
+import {Action, ThunkDispatch} from '@reduxjs/toolkit';
+import {fetchUser} from '../features/user/userSlice';
 type LoginScreenProps = {
   navigation: any;
   route: any;
@@ -25,6 +29,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation, route}) => {
   const height = Dimensions.get('window').height;
 
   const [phoneNumber, setPhoneNumber] = useState('');
+  const dataUser = useSelector((state: RootState) => state.user.user);
+  const dispatch = useDispatch<ThunkDispatch<RootState, any, Action>>();
 
   const onPressSignup = () => {
     navigation.replace('SignupScreen');
@@ -46,6 +52,43 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation, route}) => {
   const isPhoneNumber = (phoneNumber: string): boolean => {
     const regex: RegExp = /^([0])+([0-9]{9})\b$/;
     return regex.test(phoneNumber);
+  };
+
+  useEffect(() => {
+    checkPhoneNumberAuthentication();
+  }, []);
+
+  const checkPhoneNumberAuthentication = async () => {
+    // Kiểm tra xem số điện thoại đã được xác thực trước đó hay chưa
+    const phoneNumber = await AsyncStorage.getItem('phoneNumber');
+    console.log(phoneNumber);
+    if (phoneNumber) {
+      // Số điện thoại đã được xác thực, tiến hành đăng nhập tự động
+      signInWithPhoneNumber(phoneNumber);
+    } else {
+      // Số điện thoại chưa được xác thực, thực hiện xác thực OTP
+      // Gửi mã OTP đến số điện thoại và yêu cầu người dùng nhập mã OTP
+      // Sau khi xác thực thành công, lưu thông tin số điện thoại vào AsyncStorage
+      // và tiến hành đăng nhập tự động
+      console.log('Không tìm thấy mã');
+    }
+  };
+
+  const signInWithPhoneNumber = (phoneNumber: string) => {
+    // Sử dụng firebase.auth().signInWithPhoneNumber() để đăng nhập bằng số điện thoại
+    // Lưu ý rằng hàm này vẫn cần xác thực OTP, nhưng OTP được gửi tự động và không cần yêu cầu người dùng nhập
+    auth()
+      .signInWithPhoneNumber(phoneNumber)
+      .then(async confirmationResult => {
+        // Xác thực thành công, lưu thông tin số điện thoại vào AsyncStorage
+        AsyncStorage.setItem('phoneNumber', phoneNumber);
+        await dispatch(fetchUser(phoneNumber));
+        navigation.replace('HomeScreen');
+        console.log('Đăng nhập thành công');
+      })
+      .catch(error => {
+        console.log('Đăng nhập thất bại', error);
+      });
   };
 
   const styles = StyleSheet.create({
