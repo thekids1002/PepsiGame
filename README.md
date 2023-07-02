@@ -1,5 +1,5 @@
 # PepsiGame
-Một số hình ảnh demo ứng dụng 
+## Một số hình ảnh demo ứng dụng 
 <img src="https://github.com/thekids1002/PepsiGame/assets/75366637/a02e4180-9b3e-48f9-8051-5a336efb67b3" alt="Hình ảnh 1" width="300">
 <img src="https://github.com/thekids1002/PepsiGame/assets/75366637/1bc0d3d4-95b0-473d-a8ee-15567ea50d4c" alt="Hình ảnh 2" width="300">
 <img src="https://github.com/thekids1002/PepsiGame/assets/75366637/e0d46b15-86ae-4bcb-8285-478421e9838e" alt="Hình ảnh 3" width="300">
