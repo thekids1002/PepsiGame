@@ -45,7 +45,7 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
       if (status === 'loading') {
         setLoading(true);
       }
-      if (status === 'succeeded') {
+      if (status === 'succeeded' || status === 'failed') {
         setLoading(false);
       }
     };

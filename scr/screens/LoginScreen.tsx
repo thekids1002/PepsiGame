@@ -43,7 +43,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation, route}) => {
     if (status === 'loading') {
       setLoading(true);
     }
-    if (status === 'succeeded') {
+    if (status === 'succeeded' || status === 'failed') {
       setLoading(false);
     }
   };

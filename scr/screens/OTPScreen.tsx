@@ -61,7 +61,7 @@ const OTPScreen: React.FC<OTPScreenProps> = ({navigation, route}) => {
     if (status === 'loading') {
       setLoading(true);
     }
-    if (status === 'succeeded') {
+    if (status === 'succeeded' || status === 'failed') {
       setLoading(false);
     }
   };
