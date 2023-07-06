@@ -14,6 +14,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import BackgroundPlay from '../components/BackgroundPlay';
 import Header from '../components/Header';
 import {PanResponderInstance} from 'react-native';
+import {useSelector} from 'react-redux';
+import {RootState} from '../app/store';
 
 interface PlayGameScreenProps {
   navigation: any;
@@ -24,7 +26,7 @@ const PlayGameScreen: React.FC<PlayGameScreenProps> = ({navigation, route}) => {
   const playType = route.params.playType;
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
-
+  const infouser = useSelector((state: RootState) => state.user.user);
   const pan = useRef(new Animated.ValueXY()).current;
   const panResponder = useRef<PanResponderInstance>(
     PanResponder.create({
@@ -40,7 +42,7 @@ const PlayGameScreen: React.FC<PlayGameScreenProps> = ({navigation, route}) => {
         const top = -120;
         const y = (pan.y as any)._value;
         if (y < top) {
-          navigation.replace('CongratulationsScreen');
+          navigation.replace('CongratulationsScreen', {typePlay: playType});
           return;
         }
         if (y > bottom) {
@@ -82,7 +84,9 @@ const PlayGameScreen: React.FC<PlayGameScreenProps> = ({navigation, route}) => {
             fontWeight: 'bold',
             color: '#FFDD00',
           }}>
-          3
+          {playType === 'miễn phí'
+            ? infouser?.freeRoundCount
+            : infouser?.roundCount}
         </Text>
         {' lượt chơi '}
         {playType}

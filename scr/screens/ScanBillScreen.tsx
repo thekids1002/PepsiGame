@@ -15,8 +15,11 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import * as ImagePicker from 'react-native-image-picker';
 import Header from '../components/Header';
-import GlobalStore from '../constrains/GlobalStore';
 import {Alert} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../app/store';
+import {Action, ThunkDispatch} from '@reduxjs/toolkit';
+import {updateRoundCount} from '../features/user/userSlice';
 
 type ScanBillScreenProps = {
   navigation: any;
@@ -25,7 +28,6 @@ type ScanBillScreenProps = {
 const ScanBillScreen: React.FC<ScanBillScreenProps> = ({navigation, route}) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
-
   const [billImage, setBillImage] = useState(
     require('../assets/imgs/bill.png'),
   );
@@ -33,6 +35,8 @@ const ScanBillScreen: React.FC<ScanBillScreenProps> = ({navigation, route}) => {
   const [modalSuccessShow, setModalSuccessShow] = useState(false);
   const [count, setCount] = useState(0);
   const [path, setPath]: any = useState(false);
+  const infouser = useSelector((state: RootState) => state.user.user);
+  const dispatch = useDispatch<ThunkDispatch<RootState, any, Action>>();
   useEffect(() => {
     // takePicture();
   }, []);
@@ -64,13 +68,17 @@ const ScanBillScreen: React.FC<ScanBillScreenProps> = ({navigation, route}) => {
         RNQRGenerator.detect({
           uri: response.assets[0].uri,
         })
-          .then(response => {
+          .then(async response => {
             const {values} = response; // Array of detected QR code values. Empty if nothing found.
 
             const message = values.join(', '); // Concatenate the array elements with a comma separator
             if (message != null && message !== undefined && message != '') {
-              GlobalStore.setRoundCount(GlobalStore.roundCount + 5);
-
+              await dispatch(
+                updateRoundCount({
+                  userPhone: infouser?.Phone,
+                  userValue: infouser?.roundCount + 5,
+                }),
+              );
               setModalErrorShow(false);
               setModalSuccessShow(true);
             } else {
@@ -227,7 +235,7 @@ const ScanBillScreen: React.FC<ScanBillScreenProps> = ({navigation, route}) => {
                   fontWeight: 'bold',
                   color: '#005082',
                 }}>
-                {GlobalStore.roundCount}
+                {infouser?.roundCount}
               </Text>
               {' lượt chơi'}
             </Text>
@@ -326,7 +334,7 @@ const ScanBillScreen: React.FC<ScanBillScreenProps> = ({navigation, route}) => {
       <Background />
       <StatusBar translucent backgroundColor={'rgba(0,0,0,0)'} />
       <ModalError />
-      <ModalSuccess playCount={GlobalStore.roundCount} />
+      <ModalSuccess playCount={infouser?.roundCount} />
       <Header
         navigation={navigation}
         title={'QUÉT MÃ'}

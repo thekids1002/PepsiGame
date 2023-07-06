@@ -11,40 +11,83 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {randomNumber} from '../utils/Function';
 import Header from '../components/Header';
-import GlobalStore from '../constrains/GlobalStore';
-
+import {useDispatch, useSelector} from 'react-redux';
+import {Action, ThunkDispatch} from '@reduxjs/toolkit';
+import {RootState} from '../app/store';
+import {
+  updateFreeRoundCount,
+  updatePepsi_Mirinda_7Up,
+  updateRoundCount,
+} from '../features/user/userSlice';
+interface ListCollection {
+  id: any;
+  name: any;
+  coins: any;
+  image: any;
+}
 interface CongratulationScreenProps {
   navigation: any;
   route: any;
 }
-const PRESENTS = [
-  {name: 'Pepsi AN', coins: 50, image: require('../assets/imgs/pepsi_an.png')},
-  {
-    name: 'Mirinda PHÚC',
-    coins: 100,
-    image: require('../assets/imgs/mirinda_phuc.png'),
-  },
-  {name: '7Up LỘC', coins: 50, image: require('../assets/imgs/7up_loc.png')},
-];
 
 const CongratulationScreen: React.FC<CongratulationScreenProps> = ({
   navigation,
   route,
 }) => {
+  const PRESENTS = useSelector(
+    (state: RootState) => state.user.listCollection,
+  ) as ListCollection[];
   const present = randomNumber(0, PRESENTS.length - 1);
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
-
-  if (present == 0) {
-    GlobalStore.setPepsiCount(GlobalStore.pepsiCount + 1);
+  const infouser = useSelector((state: RootState) => state.user.user);
+  const dispatch = useDispatch<ThunkDispatch<RootState, any, Action>>();
+  const typePlay = route.params.typePlay;
+  if (typePlay === 'miễn phí') {
+    dispatch(
+      updateFreeRoundCount({
+        userPhone: infouser?.Phone,
+        uvalue: infouser?.freeRoundCount - 1,
+      }),
+    );
+  } else {
+    dispatch(
+      updateRoundCount({
+        userPhone: infouser?.Phone,
+        userValue: infouser?.roundCount - 1,
+      }),
+    );
   }
-  if (present == 1) {
-    GlobalStore.setMirindaCount(GlobalStore.mirindaCount + 1);
-  }
-  if (present == 2) {
-    GlobalStore.setSevenUpCount(GlobalStore.sevenUpCount + 1);
-  }
-
+  const updateDrink = async () => {
+    if (present == 0) {
+      await dispatch(
+        updatePepsi_Mirinda_7Up({
+          userPhone: infouser?.Phone,
+          type: 1,
+          userValue: infouser?.pepsiCount + 1,
+        }),
+      );
+    }
+    if (present == 1) {
+      await dispatch(
+        updatePepsi_Mirinda_7Up({
+          userPhone: infouser?.Phone,
+          type: 3,
+          userValue: infouser?.mirindaCount + 1,
+        }),
+      );
+    }
+    if (present == 2) {
+      await dispatch(
+        updatePepsi_Mirinda_7Up({
+          userPhone: infouser?.Phone,
+          type: 2,
+          userValue: infouser?.sevenUpCount + 1,
+        }),
+      );
+    }
+  };
+  updateDrink();
   // GlobalStore.AddCoins(PRESENTS[present].coins);
 
   const onPressConfirm = () => {
@@ -140,7 +183,13 @@ const CongratulationScreen: React.FC<CongratulationScreenProps> = ({
           alignItems: 'center',
         }}>
         <Image
-          source={PRESENTS[present].image}
+          source={
+            PRESENTS[present].image === 'pepsi'
+              ? require('../assets/imgs/pepsi_an.png')
+              : PRESENTS[present].image === 'mirinda'
+              ? require('../assets/imgs/mirinda_phuc.png')
+              : require('../assets/imgs/7up_loc.png')
+          }
           style={{
             marginBottom: 26,
           }}

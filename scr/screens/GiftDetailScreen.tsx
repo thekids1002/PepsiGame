@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,11 +12,21 @@ import {
   TextInput,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-
 import LabelCoins from '../components/LabelCoins';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Header from '../components/Header';
-import GlobalStore from '../constrains/GlobalStore';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../app/store';
+import {Action, ThunkDispatch} from '@reduxjs/toolkit';
+import {
+  decrementCoint,
+  fecthGifts,
+  incrementCoint,
+  updateOrAddCollection,
+  updateQuantityGift,
+  updateUser,
+} from '../features/user/userSlice';
+import {imageMapping} from '../utils/Function';
 
 interface Gift {
   name: string;
@@ -52,22 +62,26 @@ const GiftDetailScreen: React.FC<any> = ({navigation, route}) => {
     useState<boolean>(false);
 
   const [giftSelected, setGiftSelected] = useState<Gift>();
-  const [fullname, setFullname] = useState<string>('Võ Hoàng Kiệt');
-  const [phoneNumber, setPhoneNumber] = useState<string>('0396527908');
+
   const [address, setAddress] = useState<string>('');
   const [description, setDescription] = useState<string>('');
 
   const [errFullname, setErrFullname] = useState<boolean>(false);
   const [errPhoneNumber, setErrPhoneNumber] = useState<boolean>(false);
   const [errAddress, setErrAddress] = useState<boolean>(false);
+  const infouser = useSelector((state: RootState) => state.user.user);
+  const listGift = useSelector((state: RootState) => state.user.listGift);
+  const dispatch = useDispatch<ThunkDispatch<RootState, any, Action>>();
 
+  const [fullname, setFullname] = useState<string>(infouser?.Name);
+  const [phoneNumber, setPhoneNumber] = useState<string>(infouser?.Phone);
   const onPressGetExchange = (item: Gift) => {
     setGiftSelected(item);
     setModalInfomationShow(true);
     //console.log(item);
   };
 
-  const onPressConfirm = (gift: Gift) => {
+  const onPressConfirm = async (gift: Gift) => {
     // Reset error alert
     setErrFullname(false);
     setErrPhoneNumber(false);
@@ -89,18 +103,43 @@ const GiftDetailScreen: React.FC<any> = ({navigation, route}) => {
     if (validForm) {
       setModalInfomationShow(false);
       setModalSuccessfullyShow(true);
-      GlobalStore.findAndDecreaseGiftQuantity(gift.name);
-      GlobalStore.updateOrAddCollection({
-        name: gift.name,
-        qty: 1,
-        image: gift.image,
-        price: gift.price,
-        status: Math.random() < 0.5,
-      });
+
+      await dispatch(
+        updateQuantityGift({giftName: gift.name, updateQuantity: gift.qty - 1}),
+      );
+      await dispatch(
+        updateOrAddCollection({
+          name: gift.name,
+          qty: 1,
+          image: gift.image,
+          price: gift.price,
+          status: Math.random() < 0.5,
+        }),
+      );
+      await dispatch(decrementCoint(gift.price));
     }
   };
+  const update = async () => {
+    await dispatch(
+      updateUser({
+        userPhone: infouser?.Phone,
+        userValue: JSON.stringify(infouser),
+      }),
+    );
+    await dispatch(fecthGifts());
+  };
 
-  // const listCollection = [];
+  useEffect(() => {
+    update();
+  }, [infouser]);
+
+  const fecthGift = async () => {
+    await dispatch(fecthGifts());
+  };
+
+  useEffect(() => {
+    fecthGift();
+  }, []);
 
   const Background = () => {
     return (
@@ -153,7 +192,11 @@ const GiftDetailScreen: React.FC<any> = ({navigation, route}) => {
   };
 
   const GiftItem = ({item}: GiftItemProps) => {
-    const isDisabled = item.price > GlobalStore.coins;
+    const isDisabled = item.price > infouser?.coins;
+    const imagePath = item.image + '';
+
+    // Mapping object to associate image names with require statements
+
     return (
       <View
         style={{
@@ -221,7 +264,7 @@ const GiftDetailScreen: React.FC<any> = ({navigation, route}) => {
             overflow: 'hidden',
           }}>
           <Image
-            source={{uri: item.image}}
+            source={imageMapping[imagePath]}
             style={{
               width: 140,
               height: 170,
@@ -282,6 +325,7 @@ const GiftDetailScreen: React.FC<any> = ({navigation, route}) => {
   };
 
   const MyCollection = ({item}: MyCollectionProps) => {
+    const imagePath = item.image;
     return (
       <View
         style={{
@@ -327,7 +371,7 @@ const GiftDetailScreen: React.FC<any> = ({navigation, route}) => {
             overflow: 'hidden',
           }}>
           <Image
-            source={{uri: item.image}}
+            source={imageMapping[imagePath]}
             style={{
               width: 140,
               height: 170,
@@ -448,18 +492,18 @@ const GiftDetailScreen: React.FC<any> = ({navigation, route}) => {
           style={{
             paddingHorizontal: 24,
           }}
-          data={GlobalStore.listGift}
+          data={listGift}
           numColumns={2}
           renderItem={({item}) => <GiftItem item={item} />}
           keyExtractor={item => item.name}
-          ListHeaderComponent={<LabelCoins coins={GlobalStore.coins} />}
+          ListHeaderComponent={<LabelCoins coins={infouser?.coins} />}
         />
-      ) : GlobalStore.listCollection.length != 0 ? (
+      ) : infouser?.collections.length != 0 ? (
         <FlatList
           style={{
             paddingHorizontal: 24,
           }}
-          data={GlobalStore.listCollection}
+          data={infouser?.collections}
           numColumns={2}
           renderItem={({item}) => <MyCollection item={item} />}
           keyExtractor={item => item.name}

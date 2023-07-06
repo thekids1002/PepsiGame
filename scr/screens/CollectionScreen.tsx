@@ -15,15 +15,21 @@ import Header from '../components/Header';
 import LabelCoins from '../components/LabelCoins';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faMinus, faPlus} from '@fortawesome/free-solid-svg-icons';
-import GlobalStore from '../constrains/GlobalStore';
-import {randomNumber} from '../utils/Function';
-import listGift from '../constrains/GlobleVar';
-import {globalState} from 'mobx/dist/internal';
+import {imageMapping, randomNumber} from '../utils/Function';
+
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../app/store';
+import {Action, ThunkDispatch} from '@reduxjs/toolkit';
+import {
+  decrementCombo,
+  incrementCoint,
+  updateOrAddCollection,
+  updateUser,
+} from '../features/user/userSlice';
 type CollectionScreenProps = {
   navigation: any;
   route: any;
 };
-
 const CollectionScreen: React.FC<CollectionScreenProps> = ({
   navigation,
   route,
@@ -34,12 +40,23 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
   const [coinsLeft, setCoinsLeft] = useState(700);
   const [giftCount, setGiftCount] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVang, setmodalVang] = useState(false);
+  const [modalQua, setmodalQua] = useState(false);
+  const listGift = useSelector((state: RootState) => state.user.listGift);
+  const [present, setPresent] = useState(randomNumber(0, listGift.length - 1));
 
-  const [modalVisible2, setModalVisible2] = useState(false);
-  const [modalVisible3, setModalVisible3] = useState(false);
-  const [present, setPresent] = useState(
-    randomNumber(0, GlobalStore.listGift.length - 1),
-  );
+  const infouser = useSelector((state: RootState) => state.user.user);
+  const dispatch = useDispatch<ThunkDispatch<RootState, any, Action>>();
+  const checkcombo = (giftCount: number) => {
+    if (
+      giftCount < infouser?.mirindaCount &&
+      giftCount < infouser?.pepsiCount &&
+      giftCount < infouser?.sevenUpCount
+    ) {
+      return true;
+    }
+    return false;
+  };
   const getGiftNow = () => {
     if (giftCount == 0) {
       return;
@@ -54,34 +71,48 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
     setModalVisible(false);
   };
 
-  const openModal2 = () => {
-    GlobalStore.AddCoins(300);
-    setModalVisible2(true);
+  const openModalVang = async () => {
+    await dispatch(incrementCoint(300));
+    await dispatch(decrementCombo());
+    setmodalVang(true);
   };
 
   const closeModal2 = () => {
-    setModalVisible2(false);
+    setmodalVang(false);
+  };
+
+  useEffect(() => {}, [present]);
+
+  const openModalQua = async () => {
+    setmodalQua(true);
+    await dispatch(decrementCombo());
+    await dispatch(
+      updateOrAddCollection({
+        name: listGift[present].name,
+        qty: 1,
+        image: listGift[present].image,
+        price: listGift[present].price,
+        status: false,
+      }),
+    );
+  };
+
+  const update = async () => {
+    await dispatch(
+      updateUser({
+        userPhone: infouser?.Phone,
+        userValue: JSON.stringify(infouser),
+      }),
+    );
   };
 
   useEffect(() => {
-    console.log('present 1 : ' + present);
-  }, [present]);
-
-  const openModal3 = () => {
-    setModalVisible3(true);
-    console.log('present 2 : ' + present);
-    GlobalStore.updateOrAddCollection({
-      name: GlobalStore.listGift[present].name,
-      qty: 1,
-      image: GlobalStore.listGift[present].image,
-      price: GlobalStore.listGift[present].price,
-      status: false,
-    });
-  };
+    update();
+  }, [infouser]);
 
   const closeModal3 = () => {
-    setModalVisible3(false);
-    setPresent(randomNumber(0, GlobalStore.listGift.length - 1));
+    setmodalQua(false);
+    setPresent(randomNumber(0, listGift.length - 1));
   };
 
   const Background: React.FC = () => {
@@ -122,7 +153,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
         isButtonLogout
       />
 
-      <LabelCoins coins={GlobalStore.coins} />
+      <LabelCoins coins={infouser?.coins} />
 
       <View
         style={{
@@ -139,7 +170,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
             style={styles.img}
             source={require('../assets/imgs/pepsi_an.png')}
           />
-          <Text style={styles.collectionQty}>{GlobalStore.pepsiCount}</Text>
+          <Text style={styles.collectionQty}>{infouser?.pepsiCount}</Text>
         </View>
         <View
           style={{
@@ -149,7 +180,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
             style={styles.img}
             source={require('../assets/imgs/7up_loc.png')}
           />
-          <Text style={styles.collectionQty}>{GlobalStore.sevenUpCount}</Text>
+          <Text style={styles.collectionQty}>{infouser?.sevenUpCount}</Text>
         </View>
         <View
           style={{
@@ -159,7 +190,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
             style={styles.img}
             source={require('../assets/imgs/mirinda_phuc.png')}
           />
-          <Text style={styles.collectionQty}>{GlobalStore.mirindaCount}</Text>
+          <Text style={styles.collectionQty}>{infouser?.mirindaCount}</Text>
         </View>
       </View>
 
@@ -185,9 +216,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
           style={[
             styles.button,
             {
-              backgroundColor: !GlobalStore.checkcombo(giftCount)
-                ? '#D02027'
-                : '#0063A7',
+              backgroundColor: checkcombo(giftCount) ? '#D02027' : '#0063A7',
             },
           ]}
           activeOpacity={0.6}
@@ -210,14 +239,12 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
           style={[
             styles.button,
             {
-              backgroundColor: GlobalStore.checkcombo(giftCount)
-                ? '#D02027'
-                : '#0063A7',
+              backgroundColor: checkcombo(giftCount) ? '#D02027' : '#0063A7',
             },
           ]}
           activeOpacity={0.6}
           onPress={() => {
-            if (GlobalStore.checkcombo(giftCount)) {
+            if (checkcombo(giftCount)) {
               const newVal = giftCount + 1;
               if (newVal >= 0) {
                 setGiftCount(newVal);
@@ -279,21 +306,12 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
           <TouchableOpacity
             onPress={() => {
               closeModal();
-
-              if (
-                GlobalStore.pepsiCount > 0 &&
-                GlobalStore.mirindaCount > 0 &&
-                GlobalStore.mirindaCount > 0
-              ) {
-                if (randomNumber(0, 1) == 0) {
-                  openModal2();
-                } else {
-                  openModal3();
-                }
-                GlobalStore.exchangeCombo();
+              if (randomNumber(0, 1) == 0) {
+                openModalVang();
               } else {
-                Alert.alert('Thông báo', 'Bạn không đủ combo để đổi');
+                openModalQua();
               }
+              setGiftCount(0);
             }}
             activeOpacity={0.6}
             style={{
@@ -318,7 +336,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
         statusBarTranslucent
         animationType={'slide'}
         transparent
-        visible={modalVisible2}>
+        visible={modalVang}>
         <View
           style={{
             backgroundColor: 'rgba(0, 0, 0, .5)',
@@ -389,7 +407,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
         statusBarTranslucent
         animationType={'slide'}
         transparent
-        visible={modalVisible3}>
+        visible={modalQua}>
         <View
           style={{
             backgroundColor: 'rgba(0, 0, 0, .5)',
@@ -412,7 +430,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
             />
 
             <Image
-              source={{uri: GlobalStore.listGift[present].image}}
+              source={imageMapping[listGift[present].image]}
               style={{
                 height: 160,
                 width: 117,
@@ -436,9 +454,7 @@ const CollectionScreen: React.FC<CollectionScreenProps> = ({
               fontSize: 14,
               fontWeight: 'bold',
             }}>
-            <Text style={{color: '#FFDD00'}}>
-              {GlobalStore.listGift[present].name}
-            </Text>
+            <Text style={{color: '#FFDD00'}}>{listGift[present].name}</Text>
           </Text>
 
           <TouchableOpacity

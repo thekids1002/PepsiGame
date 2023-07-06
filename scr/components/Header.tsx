@@ -13,6 +13,8 @@ import auth from '@react-native-firebase/auth';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faMugSaucer} from '@fortawesome/free-solid-svg-icons/faMugSaucer';
 import {faArrowLeft, faSignOutAlt} from '@fortawesome/free-solid-svg-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 interface HeaderProps {
   title?: any;
   isButtonBack?: any;
@@ -29,16 +31,12 @@ const Header: React.FC<HeaderProps> = ({
   route,
 }) => {
   const onPressBack = () => {
-    navigation.goBack();
+    navigation.replace('HomeScreen');
   };
   const [isLogout, setLogout] = useState(false);
 
-  const onPressLogout = () => {
+  const onPressLogout = async () => {
     setLogout(true);
-    // if (auth().currentUser) {
-    //   auth().signOut();
-    // }
-    // navigation.replace('LoginScreen');
   };
 
   const width = Dimensions.get('window').width;
@@ -91,11 +89,11 @@ const Header: React.FC<HeaderProps> = ({
           />
 
           <TouchableOpacity
-            onPress={() => {
+            onPress={async () => {
               if (auth().currentUser) {
                 auth().signOut();
-                setLogout(false);
               }
+              await AsyncStorage.setItem('phoneNumber', '');
               navigation.replace('LoginScreen');
             }}
             activeOpacity={0.6}

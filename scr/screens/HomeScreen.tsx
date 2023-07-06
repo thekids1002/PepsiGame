@@ -14,13 +14,18 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import BackgroundHome from '../components/BackgroundHome';
 import Header from '../components/Header';
 import {observer} from 'mobx-react';
-import GlobalStore from '../constrains/GlobalStore';
 import {firebase} from '@react-native-firebase/database';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../app/store';
 import {Action, ThunkDispatch} from '@reduxjs/toolkit';
-import {decrementFreeRoundCount} from '../features/user/userSlice';
+import {
+  decrementFreeRoundCount,
+  fetchUser,
+  updateFreeRoundCount,
+} from '../features/user/userSlice';
 import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Spinner from 'react-native-loading-spinner-overlay';
 type HomeScreenProps = {
   navigation: any;
   route: any;
@@ -34,19 +39,31 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
     const [modalHetLuot, setModalHetLuot] = useState(false);
     const infouser = useSelector((state: RootState) => state.user.user);
     const dispatch = useDispatch<ThunkDispatch<RootState, any, Action>>();
+    const [loading, setLoading] = useState(false);
+    const status = useSelector((state: RootState) => state.user.status);
+    const startLoading = async () => {
+      if (status === 'loading') {
+        setLoading(true);
+      }
+      if (status === 'succeeded') {
+        setLoading(false);
+      }
+    };
+    useEffect(() => {
+      startLoading();
+    }, [status]);
     const onPressPlay = () => {
       setModalShow(true);
     };
 
-    const onPressPlayFree = () => {
+    const onPressPlayFree = async () => {
       setModalShow(false);
       if (infouser?.freeRoundCount == 0) {
         setModalHetLuot(true);
         return;
       }
 
-      dispatch(decrementFreeRoundCount());
-      navigation.navigate('PlayGameScreen', {playType: 'miễn phí'});
+      navigation.replace('PlayGameScreen', {playType: 'miễn phí'});
     };
 
     const onPressPlayExchange = () => {
@@ -55,23 +72,38 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
         setModalHetLuot(true);
         return;
       }
-      GlobalStore.decrementRoundCount();
-      navigation.navigate('PlayGameScreen', {playType: 'quy đổi'});
+
+      navigation.replace('PlayGameScreen', {playType: 'quy đổi'});
     };
 
     const onPressCollection = () => {
-      navigation.navigate('Collection');
+      navigation.replace('Collection');
     };
 
     const onPressGiftDetail = () => {
-      navigation.navigate('GiftDetailScreen');
+      navigation.replace('GiftDetailScreen');
+    };
+    const getUser = async () => {
+      const value = await AsyncStorage.getItem('phoneNumber');
+      if (value) {
+        dispatch(fetchUser(value));
+      }
     };
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+      getUser();
+    }, []);
+    useEffect(() => {
+      const unsubcribe = navigation.addListener('focus', async () => {
+        await getUser();
+      });
+      return unsubcribe;
+    }, [navigation]);
 
     return (
       <SafeAreaView style={{flex: 1}}>
         <BackgroundHome />
+
         <Header navigation={navigation} isButtonLogout />
 
         <Modal
@@ -256,7 +288,7 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
             <TouchableOpacity
               onPress={() => {
                 setModalHetLuot(false);
-                navigation.navigate('ScanBillScreen');
+                navigation.replace('ScanBillScreen');
               }}
               activeOpacity={0.6}
               style={{
@@ -332,7 +364,7 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
           }}>
           <TouchableOpacity
             activeOpacity={0.6}
-            onPress={() => navigation.navigate('TutorialScreen')}>
+            onPress={() => navigation.replace('TutorialScreen')}>
             <Text
               style={{
                 color: '#FFDD00',
@@ -383,7 +415,7 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
           <TouchableOpacity
             style={styles.btn}
             activeOpacity={0.6}
-            onPress={() => navigation.navigate('ScanBillScreen')}>
+            onPress={() => navigation.replace('ScanBillScreen')}>
             <Image source={require('../assets/imgs/btn_scanQR.png')} />
           </TouchableOpacity>
           <TouchableOpacity
@@ -399,6 +431,7 @@ const HomeScreen: React.FC<HomeScreenProps> = observer(
             <Image source={require('../assets/imgs/btn_giftDetail.png')} />
           </TouchableOpacity>
         </View>
+        <Spinner visible={loading} />
       </SafeAreaView>
     );
   },

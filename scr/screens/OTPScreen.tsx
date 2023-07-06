@@ -13,12 +13,16 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import BackgroundForm from '../components/BackgroundForm';
-import auth from '@react-native-firebase/auth';
 import {RootState} from '../app/store';
 import {useDispatch, useSelector} from 'react-redux';
 import {Action, ThunkDispatch} from '@reduxjs/toolkit';
-import {fetchUser} from '../features/user/userSlice';
+import {
+  fecthGifts,
+  fecthGiftsPlayGame,
+  fetchUser,
+} from '../features/user/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Spinner from 'react-native-loading-spinner-overlay';
 type OTPScreenProps = {
   navigation: any;
   route: any;
@@ -50,6 +54,21 @@ const OTPScreen: React.FC<OTPScreenProps> = ({navigation, route}) => {
   const otp6 = useRef<TextInput>(null);
   const dataUser = useSelector((state: RootState) => state.user.user);
   const dispatch = useDispatch<ThunkDispatch<RootState, any, Action>>();
+
+  const [loading, setLoading] = useState(false);
+  const status = useSelector((state: RootState) => state.user.status);
+  const startLoading = async () => {
+    if (status === 'loading') {
+      setLoading(true);
+    }
+    if (status === 'succeeded') {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    startLoading();
+  }, [status]);
+
   const nextOtp = (
     text: string,
     ref: React.RefObject<TextInput>,
@@ -91,7 +110,7 @@ const OTPScreen: React.FC<OTPScreenProps> = ({navigation, route}) => {
 
   // Handle login
   // vì hiện tại OTP khi nhận, máy sẽ tự động verify, không cần người dùng nhập   vào
-  // nên sẽ lỗi sms otp expired, ở đây hàm này sẽ tự nhận và verify xong vào luôn màn hình home.
+  // nên sẽ lỗi sms otp expired, ở đây hàm này sẽ tự nhận và verify xong vào luôn màn hình home nên sẽ bỏ cái tự đăng nhập này
   // async function onAuthStateChanged(user: any) {
   //   if (user) {
   //     await dispatch(fetchUser(phoneNumber));
@@ -116,25 +135,30 @@ const OTPScreen: React.FC<OTPScreenProps> = ({navigation, route}) => {
     try {
       if (await confirm.confirm(otp)) {
         await dispatch(fetchUser(phoneNumber));
-        await AsyncStorage.setItem('phoneNumber', phoneNumber);
+        await dispatch(fecthGiftsPlayGame());
+        await dispatch(fecthGifts());
       }
     } catch (e) {
       Alert.alert('Thông báo', e + '');
     }
   };
 
- 
   useEffect(() => {
     if (dataUser != null && dataUser != undefined) {
+      AsyncStorage.setItem('phoneNumber', phoneNumber);
       navigation.replace('HomeScreen');
     }
   }, [dataUser]);
 
- 
-
   return (
     <SafeAreaView style={{flex: 1}}>
       <BackgroundForm titleShow={true} />
+      <Spinner
+        //visibility of Overlay Loading Spinner
+        visible={loading}
+        //Text with the Spinner
+        //Text style of the Spinner Text
+      />
       <View
         style={{
           position: 'absolute',
